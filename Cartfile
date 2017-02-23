@@ -1,0 +1,2 @@
+github "mxcl/PromiseKit" ~> 4.0
+github "ParsePlatform/Parse-SDK-iOS-OSX"
