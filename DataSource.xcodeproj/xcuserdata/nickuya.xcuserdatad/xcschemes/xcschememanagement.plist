@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>ObjectMapperDataSource.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>ParseDataSource.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>705D2DD11E5F6CA6005D3A5F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>705D2DF11E5F8FF1005D3A5F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -11,8 +11,8 @@ import DataSource
 import PromiseKit
 import Parse
 
-open class ParseDataModel<Subclass>: PFObject, BaseDataModel where Subclass: PFObject, Subclass: PFSubclassing {
-  public typealias T = ParseDataSource<Subclass>
+open class ParseDataModel: PFObject, BaseDataModel {
+  public typealias DataSourceType = ParseDataSource
   
   public var id: String? {
     get {
@@ -23,18 +23,18 @@ open class ParseDataModel<Subclass>: PFObject, BaseDataModel where Subclass: PFO
     }
   }
   
-  override required public init() {
+  public override required init() {
     super.init()
   }
 }
 
-public final class ParseDataSource<T>: DataSource where T: PFObject, T: PFSubclassing {    
-  public static var primaryKey: String? {
+public class ParseDataSource: DataSource {
+  public override static var primaryKey: String? {
     return "objectId"
   }
   
-  public static func fetch(request: FetchRequest<ParseDataSource<T>>) -> Promise<[T]> {
-    let query = T.query()!
+  public override static func fetch<T: ParseDataSource, U: ParseDataModel>(request: FetchRequest<T, U>) -> Promise<[U]> {
+    let query = U.query()!
     for (key, object) in request.conditions {
       if let conditionObject = object as? [FetchQueryCondition:Any] {
         for (condition, object) in conditionObject {
@@ -67,13 +67,13 @@ public final class ParseDataSource<T>: DataSource where T: PFObject, T: PFSubcla
         if let error = error {
           reject(error)
         } else {
-          fulfill(results as? [T] ?? [])
+          fulfill(results as? [U] ?? [])
         }
       }
     }
   }
 
-  public static func save(item: T) -> Promise<T> {
+  public override static func save<T: ParseDataModel>(item: T) -> Promise<T> {
     return Promise { fulfill, reject in
       item.saveInBackground() { (success, error) in
         if let error = error {
@@ -85,7 +85,7 @@ public final class ParseDataSource<T>: DataSource where T: PFObject, T: PFSubcla
     }
   }
 
-  public static func delete(item: T) -> Promise<Bool> {
+  public override static func delete<T: ParseDataModel>(item: T) -> Promise<Bool> {
     return Promise { fulfill, reject in
       item.deleteInBackground() { (success, error) in
         if let error = error {
