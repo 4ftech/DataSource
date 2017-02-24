@@ -22,12 +22,12 @@ open class ParseDataModel: PFObject, BaseDataModel {
 }
 
 public class ParseDataSource: DataSource {
-  public static var primaryKey: String? {
+  public override static var primaryKey: String? {
     return "objectId"
   }
   
-  public static func fetch<T>(request: FetchRequest) -> Promise<[T]> {
-    let query = (T.self as! PFObject.Type).query()!
+  public override static func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ParseDataModel {
+    let query = T.query()!
     for (key, object) in request.conditions {
       if let conditionObject = object as? [FetchQueryCondition:Any] {
         for (condition, object) in conditionObject {
@@ -63,21 +63,15 @@ public class ParseDataSource: DataSource {
         if let error = error {
           reject(error)
         } else {
-          var tArray: [T] = []
-          if let results: [PFObject] = results {
-            for result in results {
-              tArray.append(result as! T)
-            }
-          }
-          fulfill(tArray)
+          fulfill(results?.map { $0 as! T } ?? [])
         }
       }
     }
   }
 
-  public static func save<T>(item: T) -> Promise<T> {
+  public override static func save<T>(item: T) -> Promise<T> where T: ParseDataModel {
     return Promise { fulfill, reject in
-      (item as! ParseDataModel).saveInBackground() { (success, error) in
+      item.saveInBackground() { (success, error) in
         if let error = error {
           reject(error)
         } else {
@@ -87,9 +81,9 @@ public class ParseDataSource: DataSource {
     }
   }
 
-  public static func delete<T>(item: T) -> Promise<Bool> {
+  public override static func delete<T>(item: T) -> Promise<Bool> where T: ParseDataModel {
     return Promise { fulfill, reject in
-      (item as! ParseDataModel).deleteInBackground() { (success, error) in
+      item.deleteInBackground() { (success, error) in
         if let error = error {
           reject(error)
         } else {

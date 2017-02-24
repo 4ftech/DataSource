@@ -9,60 +9,25 @@
 import Foundation
 import PromiseKit
 
-public protocol DataSource {
-  static var primaryKey: String? { get }
-  
-  static func fetch<T>(request: FetchRequest) -> Promise<[T]>
-  static func getById<T>(id: String) -> Promise<T?>
-  static func save<T>(item: T) -> Promise<T>
-  static func delete<T>(item: T) -> Promise<Bool>
-}
-
-public extension DataSource {
-  static var primaryKey: String? { return nil }
-  
-  @discardableResult
-  static func getById<T>(id: String) -> Promise<T?> {
-    if let primaryKey = primaryKey {
-      let request = FetchRequest().whereKey(primaryKey, equalTo: id)
-      
-      return Promise { fulfill, reject in
-        self.fetch(request: request).then { results in
-          fulfill(results.first)
-        }.catch { error in
-          reject(error)
-        }
-      }
-    }
-    
-    return Promise(value: nil)
-  }
-}
-
-
-//open class DataSource {
-//  open class var primaryKey: String? { return nil }
+//public protocol DataSource {
+//  static var primaryKey: String? { get }
 //  
-//  open class func fetch<T: BaseDataModel>(request: FetchRequest<T>) -> Promise<[T]> {
-//    return Promise { _, _ in }
-//  }
-//  
-//  open class func save<T: BaseDataModel>(item: T) -> Promise<T> {
-//    return Promise { _, _ in }
-//  }
-//  
-//  open class func delete<T: BaseDataModel>(item: T) -> Promise<Bool> {
-//    return Promise { _, _ in }
-//  }
+//  static func fetch<T>(request: FetchRequest) -> Promise<[T]>
+//  static func getById<T>(id: String) -> Promise<T?>
+//  static func save<T>(item: T) -> Promise<T>
+//  static func delete<T>(item: T) -> Promise<Bool>
+//}
 //
+//public extension DataSource {
+//  static var primaryKey: String? { return nil }
 //  
 //  @discardableResult
-//  open class func getById<T: BaseDataModel>(id: String) -> Promise<T?> {
+//  static func getById<T>(id: String) -> Promise<T?> {
 //    if let primaryKey = primaryKey {
-//      let request = FetchRequest<T>().whereKey(primaryKey, equalTo: id)
+//      let request = FetchRequest().whereKey(primaryKey, equalTo: id)
 //      
-//      return Promise<T?> { fulfill, reject in
-//        self.fetch(request: request).then { (results: [T]) in
+//      return Promise { fulfill, reject in
+//        self.fetch(request: request).then { results in
 //          fulfill(results.first)
 //        }.catch { error in
 //          reject(error)
@@ -73,6 +38,41 @@ public extension DataSource {
 //    return Promise(value: nil)
 //  }
 //}
+
+
+open class DataSource {
+  open class var primaryKey: String? { return nil }
+  
+  open class func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+    return Promise { _, _ in }
+  }
+  
+  open class func save<T>(item: T) -> Promise<T> {
+    return Promise { _, _ in }
+  }
+  
+  open class func delete<T>(item: T) -> Promise<Bool> {
+    return Promise { _, _ in }
+  }
+
+  
+  @discardableResult
+  open class func getById<T>(id: String) -> Promise<T?> {
+    if let primaryKey = primaryKey {
+      let request = FetchRequest().whereKey(primaryKey, equalTo: id)
+      
+      return Promise<T?> { fulfill, reject in
+        self.fetch(request: request).then { (results: [T]) in
+          fulfill(results.first)
+        }.catch { error in
+          reject(error)
+        }
+      }
+    }
+    
+    return Promise(value: nil)
+  }
+}
 
 
 public protocol BaseDataModel {

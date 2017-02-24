@@ -15,7 +15,7 @@ import ObjectMapper
 import AlamofireObjectMapper
 
 
-open class ObjectMapperDataModel: NSObject, BaseDataModel {
+open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
   public typealias DataSourceType = ObjectMapperDataSource
   
   open var objectId: String?
@@ -23,27 +23,36 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel {
   override required public init() {
     super.init()
   }
+  
+  public required init?(map: Map) {
+    
+  }
+  
+  public func mapping(map: Map) {
+    
+  }
 }
 
-
 public class ObjectMapperDataSource: DataSource {
-  public static var primaryKey: String? {
+  public override static var primaryKey: String? {
     return "id"
   }
 
-  public static func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+  public override static func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
     return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
-
+      Alamofire.request("").responseArray { (response: DataResponse<[T]>) in
+        fulfill(response.result.value ?? [])
+      }
     }
   }
   
-  public static func save<T>(item: T) -> Promise<T> {
+  public override static func save<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel  {
     return Promise { fulfill, reject in
 
     }
   }
   
-  public static func delete<T>(item: T) -> Promise<Bool> {
+  public override static func delete<T>(item: T) -> Promise<Bool> where T:ObjectMapperDataModel  {
     return Promise { fulfill, reject in
 
     }
