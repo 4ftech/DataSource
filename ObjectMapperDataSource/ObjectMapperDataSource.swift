@@ -27,29 +27,23 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel {
 
 
 public class ObjectMapperDataSource: DataSource {
-  public override static var primaryKey: String? {
+  public static var primaryKey: String? {
     return "id"
   }
 
-  public override static func fetch<T>(request: FetchRequest<T>) -> Promise<[T]> where T: ObjectMapperDataModel, T: Mappable {
-    return Promise { fulfill, reject in
-      Alamofire.request("").responseArray { (response: DataResponse<[T]>) in
-        if let error = response.error {
-          reject(error)
-        } else {
-          fulfill(response.result.value ?? [])
-        }
-      }
+  public static func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+    return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
+
     }
   }
   
-  public override static func save<T>(item: T) -> Promise<T> where T: ObjectMapperDataModel {
+  public static func save<T>(item: T) -> Promise<T> {
     return Promise { fulfill, reject in
 
     }
   }
   
-  public override static func delete<T>(item: T) -> Promise<Bool> where T: ObjectMapperDataModel {
+  public static func delete<T>(item: T) -> Promise<Bool> {
     return Promise { fulfill, reject in
 
     }

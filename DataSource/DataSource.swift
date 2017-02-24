@@ -9,60 +9,25 @@
 import Foundation
 import PromiseKit
 
-//public protocol DataSource {
-//  static var primaryKey: String? { get }
-//  
-//  static func fetch<T>(request: FetchRequest<Self>) -> Promise<[T]>
-//  static func getById<T: BaseDataModel>(id: String) -> Promise<T?>
-//  static func save<T: BaseDataModel>(item: T) -> Promise<T>
-//  static func delete<T: BaseDataModel>(item: T) -> Promise<Bool>
-//}
-//
-//public extension DataSource {
-//  static var primaryKey: String? { return nil }
-//  
-//  @discardableResult
-//  static func getById<T: BaseDataModel>(id: String) -> Promise<T?> {
-//    if let primaryKey = primaryKey {
-//      let request = FetchRequest<Self>().whereKey(primaryKey, equalTo: id)
-//      
-//      return Promise { fulfill, reject in
-//        self.fetch(request: request).then { results in
-//          fulfill(results.first)
-//        }.catch { error in
-//          reject(error)
-//        }
-//      }
-//    }
-//    
-//    return Promise(value: nil)
-//  }
-//}
-
-
-open class DataSource {
-  open class var primaryKey: String? { return nil }
+public protocol DataSource {
+  static var primaryKey: String? { get }
   
-  open class func fetch<T: BaseDataModel>(request: FetchRequest<T>) -> Promise<[T]> {
-    return Promise { _, _ in }
-  }
-  
-  open class func save<T: BaseDataModel>(item: T) -> Promise<T> {
-    return Promise { _, _ in }
-  }
-  
-  open class func delete<T: BaseDataModel>(item: T) -> Promise<Bool> {
-    return Promise { _, _ in }
-  }
+  static func fetch<T>(request: FetchRequest) -> Promise<[T]>
+  static func getById<T>(id: String) -> Promise<T?>
+  static func save<T>(item: T) -> Promise<T>
+  static func delete<T>(item: T) -> Promise<Bool>
+}
 
+public extension DataSource {
+  static var primaryKey: String? { return nil }
   
   @discardableResult
-  open class func getById<T: BaseDataModel>(id: String) -> Promise<T?> {
+  static func getById<T>(id: String) -> Promise<T?> {
     if let primaryKey = primaryKey {
-      let request = FetchRequest<T>().whereKey(primaryKey, equalTo: id)
+      let request = FetchRequest().whereKey(primaryKey, equalTo: id)
       
-      return Promise<T?> { fulfill, reject in
-        self.fetch(request: request).then { (results: [T]) in
+      return Promise { fulfill, reject in
+        self.fetch(request: request).then { results in
           fulfill(results.first)
         }.catch { error in
           reject(error)
@@ -75,6 +40,41 @@ open class DataSource {
 }
 
 
+//open class DataSource {
+//  open class var primaryKey: String? { return nil }
+//  
+//  open class func fetch<T: BaseDataModel>(request: FetchRequest<T>) -> Promise<[T]> {
+//    return Promise { _, _ in }
+//  }
+//  
+//  open class func save<T: BaseDataModel>(item: T) -> Promise<T> {
+//    return Promise { _, _ in }
+//  }
+//  
+//  open class func delete<T: BaseDataModel>(item: T) -> Promise<Bool> {
+//    return Promise { _, _ in }
+//  }
+//
+//  
+//  @discardableResult
+//  open class func getById<T: BaseDataModel>(id: String) -> Promise<T?> {
+//    if let primaryKey = primaryKey {
+//      let request = FetchRequest<T>().whereKey(primaryKey, equalTo: id)
+//      
+//      return Promise<T?> { fulfill, reject in
+//        self.fetch(request: request).then { (results: [T]) in
+//          fulfill(results.first)
+//        }.catch { error in
+//          reject(error)
+//        }
+//      }
+//    }
+//    
+//    return Promise(value: nil)
+//  }
+//}
+
+
 public protocol BaseDataModel {
   associatedtype DataSourceType: DataSource
   
@@ -82,25 +82,25 @@ public protocol BaseDataModel {
   
   init()
   
-  static func fetchRequest<T: BaseDataModel>(sortDescriptor: NSSortDescriptor?, offset: Int, limit: Int) -> FetchRequest<T>
-  static func getById<T: BaseDataModel>(id: String) -> Promise<T?>
+  static func fetchRequest(sortDescriptor: NSSortDescriptor?, offset: Int, limit: Int) -> FetchRequest
+  static func getById<T>(id: String) -> Promise<T?>
   
-  func save<T: BaseDataModel>() -> Promise<T>
+  func save<T>() -> Promise<T>
   func delete() -> Promise<Bool>
 }
 
 public extension BaseDataModel {
-  public static func fetchRequest<T: BaseDataModel>(sortDescriptor: NSSortDescriptor? = nil, offset: Int = 0, limit: Int = 0) -> FetchRequest<T> {
-    return FetchRequest<T>(sortDescriptor: sortDescriptor, offset: offset, limit: limit)
+  public static func fetchRequest(sortDescriptor: NSSortDescriptor? = nil, offset: Int = 0, limit: Int = 0) -> FetchRequest {
+    return FetchRequest(sortDescriptor: sortDescriptor, offset: offset, limit: limit)
   }
   
   @discardableResult
-  public static func getById<T: BaseDataModel>(id: String) -> Promise<T?> {
+  public static func getById<T>(id: String) -> Promise<T?> {
     return DataSourceType.getById(id: id)
   }
   
   @discardableResult
-  public func save<T: BaseDataModel>() -> Promise<T> {
+  public func save<T>() -> Promise<T> {
     return DataSourceType.save(item: self as! T)
   }
   
@@ -112,7 +112,7 @@ public extension BaseDataModel {
 }
 
 
-public class FetchRequest<T: BaseDataModel> {
+public class FetchRequest {
   public var offset: Int
   public var limit: Int
   
@@ -134,7 +134,7 @@ public class FetchRequest<T: BaseDataModel> {
   
   // MARK: - Public Fetching Methods
   
-  public func fetch() -> Promise<[T]> {
+  public func fetch<T: BaseDataModel>() -> Promise<[T]> {
     return T.DataSourceType.fetch(request: self)
   }
   
@@ -169,55 +169,55 @@ public class FetchRequest<T: BaseDataModel> {
   
   // MARK: - Conditions
   @discardableResult
-  public func whereKey(_ key: String, equalTo object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, equalTo object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, equalTo: object)
     return self
   }
   
   @discardableResult
-  public func whereKey(_ key: String, greaterThan object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, greaterThan object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, greaterThan: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, greaterThanOrEqualTo object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, greaterThanOrEqualTo object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, greaterThanOrEqualTo: object)
     return self
   }
   
   @discardableResult
-  public func whereKey(_ key: String, lessThan object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, lessThan object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, lessThan: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, lessThanOrEqualTo object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, lessThanOrEqualTo object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, lessThanOrEqualTo: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, notEqualTo object: Any) -> FetchRequest<T> {
+  public func whereKey(_ key: String, notEqualTo object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, notEqualTo: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, containedIn object: [Any]) -> FetchRequest<T> {
+  public func whereKey(_ key: String, containedIn object: [Any]) -> FetchRequest {
     self.fetchConditions.whereKey(key, containedIn: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, notContainedIn object: [Any]) -> FetchRequest<T> {
+  public func whereKey(_ key: String, notContainedIn object: [Any]) -> FetchRequest {
     self.fetchConditions.whereKey(key, notContainedIn: object)
     return self
   }
 
   @discardableResult
-  public func whereKey(_ key: String, containsAllObjectsInArray object: [Any]) -> FetchRequest<T> {
+  public func whereKey(_ key: String, containsAllObjectsInArray object: [Any]) -> FetchRequest {
     self.fetchConditions.whereKey(key, containsAllObjectsInArray: object)
     return self
   }
