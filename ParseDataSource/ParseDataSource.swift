@@ -35,8 +35,8 @@ public class ParseDataSource: DataSource {
     return "objectId"
   }
   
-  public override static func fetch<T: ParseDataSource, U: ParseDataModel>(request: FetchRequest<T, U>) -> Promise<[U]> {
-    let query = U.query()!
+  public override static func fetch<T: ParseDataModel>(request: FetchRequest<T>) -> Promise<[T]> {
+    let query = T.query()!
     for (key, object) in request.conditions {
       if let conditionObject = object as? [FetchQueryCondition:Any] {
         for (condition, object) in conditionObject {
@@ -64,12 +64,16 @@ public class ParseDataSource: DataSource {
       }
     }
     
+    query.limit = request.limit
+    query.skip = request.offset
+    query.order(by: request.sortDescriptors)
+    
     return Promise { fulfill, reject in
       query.findObjectsInBackground() { (results, error) in
         if let error = error {
           reject(error)
         } else {
-          fulfill(results as? [U] ?? [])
+          fulfill(results as? [T] ?? [])
         }
       }
     }

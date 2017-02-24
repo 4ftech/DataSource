@@ -29,9 +29,9 @@ public class ObjectMapperDataSource: DataSource {
     return "id"
   }
 
-  public override static func fetch<T: ObjectMapperDataSource, U>(request: FetchRequest<T, U>) -> Promise<[U]> where U: ObjectMapperDataModel, U: Mappable {
+  public override static func fetch<T>(request: FetchRequest<T>) -> Promise<[T]> where T: ObjectMapperDataModel, T: Mappable {
     return Promise { fulfill, reject in
-      fulfill([U()])
+      fulfill([T()])
     }
   }
   
