@@ -44,6 +44,7 @@ open class DataSource {
   open class var primaryKey: String? { return nil }
   
   open class func fetch<T: DataSource, U: BaseDataModel>(request: FetchRequest<T, U>) -> Promise<[U]> {
+    NSLog("WHY?")
     return Promise { _, _ in }
   }
   
@@ -82,7 +83,7 @@ public protocol BaseDataModel {
   
   init()
   
-  static func fetchRequest<T, U>(sortDescriptor: NSSortDescriptor?, offset: Int, limit: Int) -> FetchRequest<T, U>
+  static func fetchRequest<U: BaseDataModel>(sortDescriptor: NSSortDescriptor?, offset: Int, limit: Int) -> FetchRequest<U.DataSourceType, U>
   static func getById<T: BaseDataModel>(id: String) -> Promise<T?>
   
   func save<T: BaseDataModel>() -> Promise<T>
@@ -90,8 +91,8 @@ public protocol BaseDataModel {
 }
 
 public extension BaseDataModel {
-  public static func fetchRequest<T: DataSource, U: BaseDataModel>(sortDescriptor: NSSortDescriptor? = nil, offset: Int = 0, limit: Int = 0) -> FetchRequest<T, U> {
-    return FetchRequest<T, U>()
+  public static func fetchRequest<U: BaseDataModel>(sortDescriptor: NSSortDescriptor? = nil, offset: Int = 0, limit: Int = 0) -> FetchRequest<U.DataSourceType, U> {
+    return FetchRequest<U.DataSourceType, U>()
   }
   
   @discardableResult

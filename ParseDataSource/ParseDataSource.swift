@@ -26,6 +26,8 @@ open class ParseDataModel: PFObject, BaseDataModel {
   public override required init() {
     super.init()
   }
+
+
 }
 
 public class ParseDataSource: DataSource {

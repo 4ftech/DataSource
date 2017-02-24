@@ -13,13 +13,13 @@ import AlamofireObjectMapper
 import ObjectMapper
 
 
-open class ObjectMapperDataModel: BaseDataModel {
+open class ObjectMapperDataModel: NSObject, BaseDataModel {
   public typealias DataSourceType = ObjectMapperDataSource
   
   open var id: String?
   
-  required public init() {
-    
+  override required public init() {
+    super.init()
   }
 }
 
