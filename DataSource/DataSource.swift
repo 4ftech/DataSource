@@ -78,7 +78,7 @@ open class DataSource {
 public protocol BaseDataModel {
   associatedtype DataSourceType: DataSource
   
-  var id: String? { get set }
+  var objectId: String? { get set }
   
   init()
   

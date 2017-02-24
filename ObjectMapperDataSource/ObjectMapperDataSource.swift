@@ -16,7 +16,7 @@ import ObjectMapper
 open class ObjectMapperDataModel: NSObject, BaseDataModel {
   public typealias DataSourceType = ObjectMapperDataSource
   
-  open var id: String?
+  open var objectId: String?
   
   override required public init() {
     super.init()

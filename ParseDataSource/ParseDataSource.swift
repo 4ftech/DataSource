@@ -14,15 +14,6 @@ import Parse
 open class ParseDataModel: PFObject, BaseDataModel {
   public typealias DataSourceType = ParseDataSource
   
-  public var id: String? {
-    get {
-      return self.objectId
-    }
-    set {
-      self.objectId = newValue
-    }
-  }
-  
   public override required init() {
     super.init()
   }
