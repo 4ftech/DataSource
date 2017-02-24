@@ -9,8 +9,10 @@
 import Foundation
 import DataSource
 import PromiseKit
-import AlamofireObjectMapper
+
+import Alamofire
 import ObjectMapper
+import AlamofireObjectMapper
 
 
 open class ObjectMapperDataModel: NSObject, BaseDataModel {
@@ -31,7 +33,13 @@ public class ObjectMapperDataSource: DataSource {
 
   public override static func fetch<T>(request: FetchRequest<T>) -> Promise<[T]> where T: ObjectMapperDataModel, T: Mappable {
     return Promise { fulfill, reject in
-      fulfill([T()])
+      Alamofire.request("").responseArray { (response: DataResponse<[T]>) in
+        if let error = response.error {
+          reject(error)
+        } else {
+          fulfill(response.result.value ?? [])
+        }
+      }
     }
   }
   
