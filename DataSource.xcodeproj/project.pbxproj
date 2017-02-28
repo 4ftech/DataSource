@@ -25,6 +25,7 @@
 		705D2E051E5F91E2005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
 		705D2E071E5F91F2005D3A5F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E061E5F91F2005D3A5F /* Bolts.framework */; };
 		705D2E091E5F9222005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
+		705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		705D2E011E5F91CB005D3A5F /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		705D2E031E5F91DB005D3A5F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		705D2E061E5F91F2005D3A5F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Carthage/Build/iOS/Bolts.framework; sourceTree = "<group>"; };
+		705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				705D2DA71E5E4064005D3A5F /* Info.plist */,
 				705D2DAE1E5E4073005D3A5F /* DataSource.swift */,
 				705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */,
+				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
 			);
 			path = DataSource;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */,
 				705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */,
 				705D2DAF1E5E4073005D3A5F /* DataSource.swift in Sources */,
 			);
@@ -673,6 +677,7 @@
 				705D2DF81E5F8FF1005D3A5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

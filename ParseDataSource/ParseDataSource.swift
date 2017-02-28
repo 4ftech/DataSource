@@ -22,12 +22,8 @@ open class ParseDataModel: PFObject, BaseDataModel {
 }
 
 public class ParseDataSource: DataSource {
-  public override static var primaryKey: String? {
-    return "objectId"
-  }
-  
-  public override static func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ParseDataModel {
-    let query = T.query()!
+  public static func query<T>(forRequest request: FetchRequest, ofObjectType objectType: T.Type) -> PFQuery<PFObject> where T:ParseDataModel {
+    let query = objectType.query()!
     for (key, object) in request.conditions {
       if let conditionObject = object as? [FetchQueryCondition:Any] {
         for (condition, object) in conditionObject {
@@ -55,9 +51,22 @@ public class ParseDataSource: DataSource {
       }
     }
     
-    query.limit = request.limit
-    query.skip = request.offset
+    if let limit = request.limit {
+      query.limit = limit
+    }
+    
+    if let offset = request.offset {
+      query.skip = offset
+    }
+    
     query.order(by: request.sortDescriptors)
+    
+    return query
+  }
+  
+  open override class func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ParseDataModel {
+    let query = self.query(forRequest: request, ofObjectType: T.self)
+    
     return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
       query.findObjectsInBackground() { (results, error) in
         if let error = error {
@@ -68,8 +77,22 @@ public class ParseDataSource: DataSource {
       }
     }
   }
+  
+  open override class func getById<T>(id: String) -> Promise<T?> where T:ParseDataModel {
+    let query = T.query()!
 
-  public override static func save<T>(item: T) -> Promise<T> where T: ParseDataModel {
+    return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
+      query.getObjectInBackground(withId: id) { (result, error) in
+        if let error = error {
+          reject(error)
+        } else {
+          fulfill(result as? T)
+        }
+      }
+    }
+  }
+
+  open override class func save<T>(item: T) -> Promise<T> where T: ParseDataModel {
     return Promise { fulfill, reject in
       item.saveInBackground() { (success, error) in
         if let error = error {
@@ -81,7 +104,7 @@ public class ParseDataSource: DataSource {
     }
   }
 
-  public override static func delete<T>(item: T) -> Promise<Bool> where T: ParseDataModel {
+  open override class func delete<T>(item: T) -> Promise<Bool> where T: ParseDataModel {
     return Promise { fulfill, reject in
       item.deleteInBackground() { (success, error) in
         if let error = error {
