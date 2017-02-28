@@ -50,6 +50,9 @@ public extension ObjectMapperDataModel {
 }
 
 open class ObjectMapperDataSource: DataSource {
+  open static var defaultHeaders: HTTPHeaders? = nil
+  open static var defaultParameters: Parameters? = nil
+  
   open static var baseURL: String = ""
   
   open static var fetchMethod: HTTPMethod = .get
@@ -102,20 +105,41 @@ open class ObjectMapperDataSource: DataSource {
     return "\(baseURL)/\(path)"
   }
   
-  // MARK: - GET
-  open class func alamofireFetchRequest(forURL url: String, withParameters parameters: Parameters? = nil) -> DataRequest {
+  // MARK: - Generating requests
+  open class func alamofireRequest(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> DataRequest {
+    // Combine parameters
+    var allParameters: Parameters = defaultParameters ?? [:]
+    if let parameters = parameters {
+      allParameters.append(with: parameters)
+    }
+    
+    // Combine headers
+    var allHeaders: HTTPHeaders = defaultHeaders ?? [:]
+    if let headers = headers {
+      allHeaders.append(with: headers)
+    }
+    
     return Alamofire.request(
-      fullURL(forPath: url),
-      method: fetchMethod,
-      parameters: parameters,
-      encoding: fetchEncoding).validate()
+      fullURL(forPath: path),
+      method: method,
+      parameters: allParameters,
+      encoding: encoding,
+      headers: allHeaders
+    ).validate()
   }
-
-  // MARK: Array
-  open class func fetch<T>(url: String, withParameters parameters: Parameters? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
+  
+  open class func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
+    // Returns a promise, to make it easier for a subclass of this to fetch OAuth headers first
+    return Promise<DataRequest> { fulfill, reject in
+      fulfill(alamofireRequest(forURLPath: path, method: method, parameters: parameters, encoding: encoding, headers: headers))
+    }
+  }
+  
+  // MARK: - GET Array
+  open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
     return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
-      alamofireFetchRequest(forURL: url, withParameters: parameters)
-        .responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
+      dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
+        request.responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
           switch response.result {
           case .success(let value):
             fulfill(value)
@@ -123,18 +147,21 @@ open class ObjectMapperDataSource: DataSource {
             reject(error)
           }
         }
+      }.catch { error in
+        reject(error)
+      }
     }
   }
   
   open override class func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
-    return fetch(url: T.pathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
+    return fetch(path: T.pathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
   }
   
-  // MARK: Single
-  open class func fetch<T>(url: String, withParameters parameters: Parameters? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
-    return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
-      alamofireFetchRequest(forURL: url, withParameters: parameters)
-        .responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
+  // MARK: GET Single
+  open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
+    return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
+      return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
+        request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
           switch response.result {
           case .success(let value):
             fulfill(value)
@@ -142,12 +169,28 @@ open class ObjectMapperDataSource: DataSource {
             reject(error)
           }
         }
-      
+      }
     }
+    
+    
+//    return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
+//      dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
+//        request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
+//          switch response.result {
+//          case .success(let value):
+//            fulfill(value)
+//          case .failure(let error):
+//            reject(error)
+//          }
+//        }
+//      }.catch { error in
+//        reject(error)
+//      }
+//    }
   }
   
   open override class func getById<T>(id: String) -> Promise<T?> where T:ObjectMapperDataModel {
-    return fetch(url: T.urlPath(forId: id), keyPath: T.keyPath)
+    return fetch(path: T.urlPath(forId: id), keyPath: T.keyPath)
   }
   
   // MARK: - PUT/POST
@@ -155,19 +198,15 @@ open class ObjectMapperDataSource: DataSource {
     let method: HTTPMethod = item.isNew ? insertMethod : updateMethod
     let encoding: ParameterEncoding = item.isNew ? insertEncoding : updateEncoding
     
-    return Promise { fulfill, reject in
-      Alamofire.request(
-        fullURL(forPath: item.pathForObject),
-        method: method,
-        parameters: item.toJSON(),
-        encoding: encoding)
-      .validate()
-      .responseObject { (response: DataResponse<T>) in
-        switch response.result {
-        case .success(let value):
-          fulfill(value)
-        case .failure(let error):
-          reject(error)
+    return dataRequestPromise(forURLPath: item.pathForObject, method: method, parameters: item.toJSON(), encoding: encoding).then { request in
+      return Promise<T> { fulfill, reject in
+        request.responseObject { (response: DataResponse<T>) in
+          switch response.result {
+          case .success(let value):
+            fulfill(value)
+          case .failure(let error):
+            reject(error)
+          }
         }
       }
     }
@@ -175,25 +214,23 @@ open class ObjectMapperDataSource: DataSource {
   
   // MARK: DELETE
   open override class func delete<T>(item: T) -> Promise<Bool> where T:ObjectMapperDataModel  {
-    return Promise { fulfill, reject in
-      if let _ = item.objectId {
-        // Only try to delete if have an ID
-        Alamofire.request(
-          fullURL(forPath: item.pathForObject),
-          method: deleteMethod)
-        .validate()
-        .responseJSON { response in
-          switch response.result {
-          case .success:
-            fulfill(true)
-          case .failure(let error):
-            reject(error)
+    // Only try to delete if have an ID
+    if let _ = item.objectId {
+      return dataRequestPromise(forURLPath: item.pathForObject, method: deleteMethod, encoding: deleteEncoding).then { request in
+        return Promise<Bool> { fulfill, reject in
+          request.responseJSON { response in
+            switch response.result {
+            case .success:
+              fulfill(true)
+            case .failure(let error):
+              reject(error)
+            }
           }
         }
-      } else {
-        // No object ID, means it already didn't exist so call this a success
-        fulfill(true)
       }
+    } else {
+      // No object ID, means it already didn't exist so call this a success
+      return Promise<Bool>(value: true)
     }
   }
   
