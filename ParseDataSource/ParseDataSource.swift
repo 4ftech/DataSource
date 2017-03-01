@@ -44,6 +44,9 @@ public class ParseDataSource: DataSource {
             query.whereKey(key, containsAllObjectsIn: object as! [Any])
           case .notContainedIn:
             query.whereKey(key, notContainedIn: object as! [Any])
+          case .regex:
+            query.whereKey(key, matchesRegex: object as! String, modifiers: conditionObject[.regexOptions] as? String)
+          case .regexOptions: break
           }
         }
       } else {
@@ -85,7 +88,7 @@ public class ParseDataSource: DataSource {
       query.getObjectInBackground(withId: id) { (result, error) in
         if let error = error {
           reject(error)
-        } else {
+        } else {          
           fulfill(result as? T)
         }
       }

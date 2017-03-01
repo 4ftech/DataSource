@@ -83,6 +83,8 @@ open class ObjectMapperDataSource: DataSource {
           case .containedIn: break
           case .containsAll: break
           case .notContainedIn: break
+          case .regex: break
+          case .regexOptions: break
           }
         }
       } else {

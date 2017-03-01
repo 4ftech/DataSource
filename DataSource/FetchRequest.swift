@@ -118,6 +118,12 @@ public class FetchRequest {
     self.fetchConditions.whereKey(key, containsAllObjectsInArray: object)
     return self
   }
+  
+  @discardableResult
+  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: String? = nil) -> FetchRequest {
+    self.fetchConditions.whereKey(key, matchesRegex: regex, modifiers: modifiers)
+    return self
+  }
 }
 
 

@@ -4,3 +4,4 @@ github "ParsePlatform/Parse-SDK-iOS-OSX"
 
 
 github "tristanhimmelman/AlamofireObjectMapper" ~> 4.0
+github "ReactiveX/RxSwift" ~> 3.0

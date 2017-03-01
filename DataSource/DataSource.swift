@@ -60,7 +60,7 @@ open class DataSource {
 }
 
 
-public protocol BaseDataModel {
+public protocol BaseDataModel: class, Equatable, Hashable {
   associatedtype DataSourceType: DataSource
   
   var objectId: String? { get set }
@@ -98,7 +98,20 @@ public extension BaseDataModel {
   public func delete() -> Promise<Bool> {
     return DataSourceType.delete(item: self)
   }
+ 
   
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
+    if let lhsId = lhs.objectId, let rhsId = rhs.objectId {
+      return lhsId == rhsId
+    } else {
+      return lhs == rhs
+    }
+  }
+  
+  public var hashValue: Int {
+    return objectId?.hashValue ?? 0
+  }
+
 }
 
 

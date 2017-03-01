@@ -9,7 +9,7 @@
 import Foundation
 
 public enum FetchQueryCondition {
-  case notEqualTo, lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo, containedIn, notContainedIn, containsAll
+  case notEqualTo, lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo, containedIn, notContainedIn, containsAll, regex, regexOptions
 }
 
 public class FetchConditions {
@@ -53,6 +53,14 @@ public class FetchConditions {
   
   public func whereKey(_ key: String, containsAllObjectsInArray object: [Any]) {
     self.whereKey(key, condition: .containsAll, object: object)
+  }
+  
+  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: String? = nil) {
+    self.whereKey(key, condition: .regex, object: regex)
+    
+    if let modifiers = modifiers {
+      self.whereKey(key, condition: .regexOptions, object: modifiers)
+    }
   }
   
   
