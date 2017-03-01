@@ -195,7 +195,6 @@
 				705D2D9F1E5E4064005D3A5F /* Frameworks */,
 				705D2DA01E5E4064005D3A5F /* Headers */,
 				705D2DA11E5E4064005D3A5F /* Resources */,
-				705D2DCC1E5F6B32005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -318,20 +317,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		705D2DCC1E5F6B32005D3A5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks\n";
-		};
 		705D2E081E5F91F9005D3A5F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
