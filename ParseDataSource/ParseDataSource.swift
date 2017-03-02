@@ -12,7 +12,7 @@ import PromiseKit
 import Parse
 
 open class ParseDataModel: PFObject, BaseDataModel {
-  public typealias DataSourceType = ParseDataSource
+  public static var sharedDataSource: DataSource = ParseDataSource()
 
   open var name: String? {
     get {
@@ -29,53 +29,60 @@ open class ParseDataModel: PFObject, BaseDataModel {
 }
 
 public class ParseDataSource: DataSource {
-  public static func query<T>(forRequest request: FetchRequest, ofObjectType objectType: T.Type) -> PFQuery<PFObject> where T:ParseDataModel {
+  public required init() {
+    
+  }
+  
+  public func query<T>(forRequest request: FetchRequest? = nil, ofObjectType objectType: T.Type) -> PFQuery<PFObject> where T:ParseDataModel {
     let query = objectType.query()!
-    for (key, object) in request.conditions {
-      if let conditionObject = object as? [FetchQueryCondition:Any] {
-        for (condition, object) in conditionObject {
-          switch condition {
-          case .notEqualTo:
-            query.whereKey(key, notEqualTo: object)
-          case .greaterThan:
-            query.whereKey(key, greaterThan: object)
-          case .greaterThanOrEqualTo:
-            query.whereKey(key, greaterThanOrEqualTo: object)
-          case .lessThan:
-            query.whereKey(key, lessThan: object)
-          case .lessThanOrEqualTo:
-            query.whereKey(key, lessThanOrEqualTo: object)
-          case .containedIn:
-            query.whereKey(key, containedIn: object as! [Any])
-          case .containsAll:
-            query.whereKey(key, containsAllObjectsIn: object as! [Any])
-          case .notContainedIn:
-            query.whereKey(key, notContainedIn: object as! [Any])
-          case .regex:
-            query.whereKey(key, matchesRegex: object as! String, modifiers: conditionObject[.regexOptions] as? String)
-          case .regexOptions: break
+    
+    if let request = request {
+      for (key, object) in request.conditions {
+        if let conditionObject = object as? [FetchQueryCondition:Any] {
+          for (condition, object) in conditionObject {
+            switch condition {
+            case .notEqualTo:
+              query.whereKey(key, notEqualTo: object)
+            case .greaterThan:
+              query.whereKey(key, greaterThan: object)
+            case .greaterThanOrEqualTo:
+              query.whereKey(key, greaterThanOrEqualTo: object)
+            case .lessThan:
+              query.whereKey(key, lessThan: object)
+            case .lessThanOrEqualTo:
+              query.whereKey(key, lessThanOrEqualTo: object)
+            case .containedIn:
+              query.whereKey(key, containedIn: object as! [Any])
+            case .containsAll:
+              query.whereKey(key, containsAllObjectsIn: object as! [Any])
+            case .notContainedIn:
+              query.whereKey(key, notContainedIn: object as! [Any])
+            case .regex:
+              query.whereKey(key, matchesRegex: object as! String, modifiers: conditionObject[.regexOptions] as? String)
+            case .regexOptions: break
+            }
           }
+        } else {
+          query.whereKey(key, equalTo: object)
         }
-      } else {
-        query.whereKey(key, equalTo: object)
       }
+      
+      if let limit = request.limit {
+        query.limit = limit
+      }
+      
+      if let offset = request.offset {
+        query.skip = offset
+      }
+      
+      query.order(by: request.sortDescriptors)
     }
-    
-    if let limit = request.limit {
-      query.limit = limit
-    }
-    
-    if let offset = request.offset {
-      query.skip = offset
-    }
-    
-    query.order(by: request.sortDescriptors)
     
     return query
   }
   
-  open override class func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ParseDataModel {
-    let query = self.query(forRequest: request, ofObjectType: T.self)
+  open func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+    let query = self.query(forRequest: request, ofObjectType: T.self as! ParseDataModel.Type)
     
     return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
       query.findObjectsInBackground() { (results, error) in
@@ -88,8 +95,8 @@ public class ParseDataSource: DataSource {
     }
   }
   
-  open override class func getById<T>(id: String) -> Promise<T?> where T:ParseDataModel {
-    let query = T.query()!
+  open func getById<T>(id: String) -> Promise<T?> {
+    let query = self.query(ofObjectType: T.self as! ParseDataModel.Type)
 
     return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
       query.getObjectInBackground(withId: id) { (result, error) in
@@ -102,9 +109,9 @@ public class ParseDataSource: DataSource {
     }
   }
 
-  open override class func save<T>(item: T) -> Promise<T> where T: ParseDataModel {
+  open func save<T>(item: T) -> Promise<T> {
     return Promise { fulfill, reject in
-      item.saveInBackground() { (success, error) in
+      (item as! ParseDataModel).saveInBackground() { (success, error) in
         if let error = error {
           reject(error)
         } else {
@@ -114,9 +121,9 @@ public class ParseDataSource: DataSource {
     }
   }
 
-  open override class func delete<T>(item: T) -> Promise<Bool> where T: ParseDataModel {
+  open func delete<T>(item: T) -> Promise<Bool> {
     return Promise { fulfill, reject in
-      item.deleteInBackground() { (success, error) in
+      (item as! ParseDataModel).deleteInBackground() { (success, error) in
         if let error = error {
           reject(error)
         } else {

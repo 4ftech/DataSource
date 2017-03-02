@@ -32,7 +32,7 @@ public class FetchRequest {
   // MARK: - Public Fetching Methods
   
   public func fetch<T>() -> Promise<[T]> where T: BaseDataModel {
-    return T.DataSourceType.fetch(request: self)
+    return T.sharedDataSource.fetch(request: self)
   }
   
   

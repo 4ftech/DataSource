@@ -14,35 +14,30 @@ import Alamofire
 import ObjectMapper
 import AlamofireObjectMapper
 
-
-public protocol ObjectMapperDataModel: BaseDataModel, Mappable {
-  static var urlPath: String { get }
-
-  static var keyPath: String? { get }
-  static var listKeyPath: String? { get }
-
+open class ObjectMapperDataModel: BaseDataModel, Mappable {
+  static var _sharedDataSource: ObjectMapperDataSource!
+  open class var sharedDataSource: DataSource {
+    return _sharedDataSource
+  }
   
-  static var urlPathForList: String { get }
-  static func urlPath(forId: String) -> String
-  var pathForObject: String { get }
+  public var objectId: String?
+  public var name: String?
+  public var updatedAt: Date?
   
+  open class var urlPath: String { return "" }
   
-  var isNew: Bool { get }
-}
-
-public extension ObjectMapperDataModel {
-  public static var keyPath: String? { return nil }  
-  public static var listKeyPath: String? { return nil }
+  open class var keyPath: String? { return nil }
+  open class var listKeyPath: String? { return nil }
   
-  public static var urlPathForList: String {
+  open class var urlPathForList: String {
     return urlPath
   }
   
-  public static func urlPath(forId id: String) -> String {
+  open class func urlPath(forId id: String) -> String {
     return "\(urlPath)/\(id)"
   }
   
-  public var pathForObject: String {
+  open var pathForObject: String {
     if let id = objectId {
       return type(of: self).urlPath(forId: id)
     } else {
@@ -54,7 +49,19 @@ public extension ObjectMapperDataModel {
     return objectId == nil
   }
   
-  public static func ==(lhs: Self, rhs: Self) -> Bool {
+  public required init() {
+    NSLog("Initializing ObjectMapperDataSource")
+  }
+  
+  public required init?(map: Map) {
+    
+  }
+  
+  open func mapping(map: Map) {
+    
+  }
+  
+  public static func ==(lhs: ObjectMapperDataModel, rhs: ObjectMapperDataModel) -> Bool {
     if let lhsId = lhs.objectId, let rhsId = rhs.objectId {
       return lhsId == rhsId
     } else {
@@ -63,25 +70,55 @@ public extension ObjectMapperDataModel {
   }
 }
 
-open class ObjectMapperDataSource: DataSource {
-  open class var defaultHeaders: HTTPHeaders? { return nil }
-  open class var defaultParameters: Parameters? { return nil }
+public protocol ObjectMapperDataSource: DataSource {
+  var defaultHeaders: HTTPHeaders? { get }
+  var defaultParameters: Parameters? { get }
   
-  open class var baseURL: String { return "" }
+  var baseURL: String { get }
   
-  open class var fetchMethod: HTTPMethod { return .get }
-  open class var fetchEncoding: ParameterEncoding { return URLEncoding.default }
+  var fetchMethod: HTTPMethod { get }
+  var fetchEncoding: ParameterEncoding { get }
   
-  open class var updateMethod: HTTPMethod { return .put }
-  open class var updateEncoding: ParameterEncoding { return JSONEncoding.default }
+  var updateMethod: HTTPMethod { get }
+  var updateEncoding: ParameterEncoding { get }
   
-  open class var insertMethod: HTTPMethod { return .post }
-  open class var insertEncoding: ParameterEncoding { return JSONEncoding.default }
+  var insertMethod: HTTPMethod { get }
+  var insertEncoding: ParameterEncoding { get }
   
-  open class var deleteMethod: HTTPMethod { return .delete }
-  open class var deleteEncoding: ParameterEncoding { return URLEncoding.default }
+  var deleteMethod: HTTPMethod { get }
+  var deleteEncoding: ParameterEncoding { get }
   
-  open class func update(parameters: inout Parameters, key: String, condition: FetchQueryCondition, value: Any) {
+  func update(parameters: inout Parameters, key: String, condition: FetchQueryCondition, value: Any)
+  
+  func parameters(forFetchRequest request: FetchRequest) -> Parameters
+  func fullURL(forPath path: String) -> String
+  func alamofireRequest(forURLPath path: String, method: HTTPMethod, parameters: Parameters?, encoding: ParameterEncoding, headers: HTTPHeaders?) -> DataRequest
+  func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters?, encoding: ParameterEncoding, headers: HTTPHeaders?) -> Promise<DataRequest>
+  
+  func fetchArray<T>(path: String, withParameters parameters: Parameters?, headers: HTTPHeaders?, keyPath: String?) -> Promise<[T]> where T:ObjectMapperDataModel
+  func fetchOne<T>(path: String, withParameters parameters: Parameters?, headers: HTTPHeaders?, keyPath: String?) -> Promise<T?> where T:ObjectMapperDataModel
+  func saveMapped<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel
+}
+
+open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
+  open var baseURL: String { return "" }
+  
+  open var defaultHeaders: HTTPHeaders? { return nil }
+  open var defaultParameters: Parameters? { return nil }
+  
+  open var fetchMethod: HTTPMethod { return .get }
+  open var fetchEncoding: ParameterEncoding { return URLEncoding.default }
+  
+  open var updateMethod: HTTPMethod { return .put }
+  open var updateEncoding: ParameterEncoding { return JSONEncoding.default }
+  
+  open var insertMethod: HTTPMethod { return .post }
+  open var insertEncoding: ParameterEncoding { return JSONEncoding.default }
+  
+  open var deleteMethod: HTTPMethod { return .delete }
+  open var deleteEncoding: ParameterEncoding { return URLEncoding.default }
+  
+  open func update(parameters: inout Parameters, key: String, condition: FetchQueryCondition, value: Any) {
     switch condition {
     case .notEqualTo: break
     case .greaterThan: break
@@ -96,7 +133,7 @@ open class ObjectMapperDataSource: DataSource {
     }
   }
   
-  open class func parameters(forFetchRequest request: FetchRequest) -> Parameters {
+  open func parameters(forFetchRequest request: FetchRequest) -> Parameters {
     var parameters: Parameters = [:]
     
     for (key, object) in request.conditions {
@@ -121,14 +158,15 @@ open class ObjectMapperDataSource: DataSource {
     return parameters
   }
   
-  open class func fullURL(forPath path: String) -> String {
+  open func fullURL(forPath path: String) -> String {
     return "\(baseURL)/\(path)"
   }
   
   // MARK: - Generating requests
-  open class func alamofireRequest(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> DataRequest {
+  open func alamofireRequest(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> DataRequest {
     // Combine parameters
     var allParameters: Parameters = defaultParameters ?? [:]
+    NSLog("\(defaultParameters)")
     if let parameters = parameters {
       allParameters.append(with: parameters)
     }
@@ -145,17 +183,18 @@ open class ObjectMapperDataSource: DataSource {
       parameters: allParameters,
       encoding: encoding,
       headers: allHeaders
-    ).validate()
+      ).validate()
   }
   
-  open class func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
+  open func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
     // Returns a promise, to make it easier for a subclass of this to fetch OAuth headers first
     return Promise<DataRequest>(value: alamofireRequest(forURLPath: path, method: method, parameters: parameters, encoding: encoding, headers: headers))
   }
   
+  
+  
   // MARK: - GET Array
-  open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
-    
+  open func fetchArray<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
       return Promise<[T]> { fulfill, reject in
         request.responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
@@ -171,12 +210,8 @@ open class ObjectMapperDataSource: DataSource {
     
   }
   
-  open override class func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
-    return fetch(path: T.urlPathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
-  }
-  
   // MARK: GET Single
-  open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
+  open func fetchOne<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
     
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
       return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
@@ -193,12 +228,8 @@ open class ObjectMapperDataSource: DataSource {
     
   }
   
-  open override class func getById<T>(id: String) -> Promise<T?> where T:ObjectMapperDataModel {
-    return fetch(path: T.urlPath(forId: id), keyPath: T.keyPath)
-  }
-  
   // MARK: - PUT/POST
-  open override class func save<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel  {
+  open func saveMapped<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel, T:Mappable {
     let method: HTTPMethod = item.isNew ? insertMethod : updateMethod
     let encoding: ParameterEncoding = item.isNew ? insertEncoding : updateEncoding
     
@@ -217,7 +248,9 @@ open class ObjectMapperDataSource: DataSource {
   }
   
   // MARK: DELETE
-  open override class func delete<T>(item: T) -> Promise<Bool> where T:ObjectMapperDataModel  {
+  open func delete<T>(item: T) -> Promise<Bool> {
+    let item = item as! ObjectMapperDataModel
+    
     // Only try to delete if have an ID
     if let _ = item.objectId {
       return dataRequestPromise(forURLPath: item.pathForObject, method: deleteMethod, encoding: deleteEncoding).then { request in
@@ -238,6 +271,34 @@ open class ObjectMapperDataSource: DataSource {
     }
   }
   
+  public required init() {
+    
+  }
   
+  public func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+    return Promise<[T]> { _,_ in }
+  }
+  
+  public func getById<T>(id: String) -> Promise<T?> {
+    return Promise<T?> { _,_ in }
+  }
+  
+  public func save<T>(item: T) -> Promise<T> {
+    return Promise<T> { _,_ in }
+  }
 }
 
+
+open class BaseObjectMapperDataSource: EmptyObjectMapperDataSource {
+  open override func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
+    return fetchArray(path: T.urlPathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
+  }
+  
+  open override func getById<T>(id: String) -> Promise<T?> where T:ObjectMapperDataModel {
+    return fetchOne(path: T.urlPath(forId: id), keyPath: T.keyPath)
+  }
+  
+  open override func save<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel {
+    return saveMapped(item: item)
+  }
+}

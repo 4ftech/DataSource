@@ -40,28 +40,17 @@ import PromiseKit
 //}
 
 
-open class DataSource {
-  open class func fetch<T>(request: FetchRequest) -> Promise<[T]> {
-    return Promise { _, _ in }
-  }
-  
-  open class func save<T>(item: T) -> Promise<T> {
-    return Promise { _, _ in }
-  }
-  
-  open class func delete<T>(item: T) -> Promise<Bool> {
-    return Promise { _, _ in }
-  }
-  
-  @discardableResult
-  open class func getById<T>(id: String) -> Promise<T?> {
-    return Promise { _, _ in }
-  }
+public protocol DataSource {
+  init()
+  func fetch<T>(request: FetchRequest) -> Promise<[T]>
+  func save<T>(item: T) -> Promise<T>
+  func delete<T>(item: T) -> Promise<Bool>
+  func getById<T>(id: String) -> Promise<T?>
 }
 
 
 public protocol BaseDataModel: class, Equatable, Hashable {
-  associatedtype DataSourceType: DataSource
+  static var sharedDataSource: DataSource { get }
   
   var objectId: String? { get set }
   var updatedAt: Date? { get }
@@ -85,7 +74,7 @@ public extension BaseDataModel {
   
   @discardableResult
   public static func getById<T:BaseDataModel>(id: String) -> Promise<T?> {
-    return DataSourceType.getById(id: id)
+    return sharedDataSource.getById(id: id)
   }
   
   public static func getAll<T:BaseDataModel>() -> Promise<[T]> {
@@ -94,12 +83,12 @@ public extension BaseDataModel {
   
   @discardableResult
   public func save<T:BaseDataModel>() -> Promise<T> {
-    return DataSourceType.save(item: self as! T)
+    return type(of: self).sharedDataSource.save(item: self as! T)
   }
   
   @discardableResult
   public func delete() -> Promise<Bool> {
-    return DataSourceType.delete(item: self)
+    return type(of: self).sharedDataSource.delete(item: self)
   }
  
   
