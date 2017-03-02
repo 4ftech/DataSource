@@ -64,7 +64,10 @@ public protocol BaseDataModel: class, Equatable, Hashable {
   associatedtype DataSourceType: DataSource
   
   var objectId: String? { get set }
+  var updatedAt: Date? { get }
   
+  var name: String? { get set }
+
   init()
   
   static func fetchRequest(sortDescriptor: NSSortDescriptor?, offset: Int?, limit: Int?) -> FetchRequest
@@ -100,16 +103,8 @@ public extension BaseDataModel {
   }
  
   
-  public static func ==(lhs: Self, rhs: Self) -> Bool {
-    if let lhsId = lhs.objectId, let rhsId = rhs.objectId {
-      return lhsId == rhsId
-    } else {
-      return lhs == rhs
-    }
-  }
-  
   public var hashValue: Int {
-    return objectId?.hashValue ?? 0
+    return objectId?.hashValue ?? name?.hashValue ?? 0
   }
 
 }

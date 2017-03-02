@@ -13,12 +13,19 @@ import Parse
 
 open class ParseDataModel: PFObject, BaseDataModel {
   public typealias DataSourceType = ParseDataSource
+
+  open var name: String? {
+    get {
+      return self["name"] as? String
+    }
+    set {
+      self["name"] = newValue
+    }
+  }
   
   public override required init() {
     super.init()
   }
-
-
 }
 
 public class ParseDataSource: DataSource {

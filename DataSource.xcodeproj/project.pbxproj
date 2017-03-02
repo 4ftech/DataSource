@@ -31,6 +31,7 @@
 		705D2F9C1E66950C005D3A5F /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9B1E66950C005D3A5F /* RxSwift.framework */; };
 		705D2F9E1E669510005D3A5F /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9D1E669510005D3A5F /* RxCocoa.framework */; };
 		705D2FA01E669514005D3A5F /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9F1E669514005D3A5F /* RxBlocking.framework */; };
+		70C407B01E6802C500A14EB7 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407AF1E6802C500A14EB7 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		705D2F9B1E66950C005D3A5F /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		705D2F9D1E669510005D3A5F /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		705D2F9F1E669514005D3A5F /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
+		70C407AF1E6802C500A14EB7 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 				705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */,
 				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
 				705D2F991E669409005D3A5F /* NotificationCenter.swift */,
+				70C407AF1E6802C500A14EB7 /* Utils.swift */,
 			);
 			path = DataSource;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70C407B01E6802C500A14EB7 /* Utils.swift in Sources */,
 				705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */,
 				705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */,
 				705D2DAF1E5E4073005D3A5F /* DataSource.swift in Sources */,

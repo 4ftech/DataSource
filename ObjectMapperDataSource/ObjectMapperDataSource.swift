@@ -14,20 +14,27 @@ import Alamofire
 import ObjectMapper
 import AlamofireObjectMapper
 
+
 public protocol ObjectMapperDataModel: BaseDataModel, Mappable {
-  static var urlPath: String { get set }
+  static var urlPath: String { get }
+
+  static var keyPath: String? { get }
+  static var listKeyPath: String? { get }
+
+  
   static var urlPathForList: String { get }
   static func urlPath(forId: String) -> String
   var pathForObject: String { get }
   
-  static var keyPath: String? { get set }
-  static var listKeyPath: String? { get set }
   
   var isNew: Bool { get }
 }
 
 public extension ObjectMapperDataModel {
-  public static var pathForList: String {
+  public static var keyPath: String? { return nil }  
+  public static var listKeyPath: String? { return nil }
+  
+  public static var urlPathForList: String {
     return urlPath
   }
   
@@ -43,29 +50,51 @@ public extension ObjectMapperDataModel {
     }
   }
   
-  
   public var isNew: Bool {
     return objectId == nil
+  }
+  
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
+    if let lhsId = lhs.objectId, let rhsId = rhs.objectId {
+      return lhsId == rhsId
+    } else {
+      return lhs == rhs
+    }
   }
 }
 
 open class ObjectMapperDataSource: DataSource {
-  open static var defaultHeaders: HTTPHeaders? = nil
-  open static var defaultParameters: Parameters? = nil
+  open class var defaultHeaders: HTTPHeaders? { return nil }
+  open class var defaultParameters: Parameters? { return nil }
   
-  open static var baseURL: String = ""
+  open class var baseURL: String { return "" }
   
-  open static var fetchMethod: HTTPMethod = .get
-  open static var fetchEncoding: ParameterEncoding = URLEncoding.default
+  open class var fetchMethod: HTTPMethod { return .get }
+  open class var fetchEncoding: ParameterEncoding { return URLEncoding.default }
   
-  open static var updateMethod: HTTPMethod = .put
-  open static var updateEncoding: ParameterEncoding = JSONEncoding.default
+  open class var updateMethod: HTTPMethod { return .put }
+  open class var updateEncoding: ParameterEncoding { return JSONEncoding.default }
   
-  open static var insertMethod: HTTPMethod = .post
-  open static var insertEncoding: ParameterEncoding = JSONEncoding.default
+  open class var insertMethod: HTTPMethod { return .post }
+  open class var insertEncoding: ParameterEncoding { return JSONEncoding.default }
   
-  open static var deleteMethod: HTTPMethod = .delete
-  open static var deleteEncoding: ParameterEncoding = URLEncoding.default
+  open class var deleteMethod: HTTPMethod { return .delete }
+  open class var deleteEncoding: ParameterEncoding { return URLEncoding.default }
+  
+  open class func update(parameters: inout Parameters, key: String, condition: FetchQueryCondition, value: Any) {
+    switch condition {
+    case .notEqualTo: break
+    case .greaterThan: break
+    case .greaterThanOrEqualTo: break
+    case .lessThan: break
+    case .lessThanOrEqualTo: break
+    case .containedIn: break
+    case .containsAll: break
+    case .notContainedIn: break
+    case .regex: break
+    case .regexOptions: break
+    }
+  }
   
   open class func parameters(forFetchRequest request: FetchRequest) -> Parameters {
     var parameters: Parameters = [:]
@@ -73,19 +102,8 @@ open class ObjectMapperDataSource: DataSource {
     for (key, object) in request.conditions {
       if let conditionObject = object as? [FetchQueryCondition:Any] {
         // Not sure these should apply in a default API case
-        for (condition, _) in conditionObject {
-          switch condition {
-          case .notEqualTo: break
-          case .greaterThan: break
-          case .greaterThanOrEqualTo: break
-          case .lessThan: break
-          case .lessThanOrEqualTo: break
-          case .containedIn: break
-          case .containsAll: break
-          case .notContainedIn: break
-          case .regex: break
-          case .regexOptions: break
-          }
+        for (condition, value) in conditionObject {
+          update(parameters: &parameters, key: key, condition: condition, value: value)
         }
       } else {
         parameters[key] = object
@@ -132,15 +150,14 @@ open class ObjectMapperDataSource: DataSource {
   
   open class func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
     // Returns a promise, to make it easier for a subclass of this to fetch OAuth headers first
-    return Promise<DataRequest> { fulfill, reject in
-      fulfill(alamofireRequest(forURLPath: path, method: method, parameters: parameters, encoding: encoding, headers: headers))
-    }
+    return Promise<DataRequest>(value: alamofireRequest(forURLPath: path, method: method, parameters: parameters, encoding: encoding, headers: headers))
   }
   
   // MARK: - GET Array
   open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
-    return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
-      dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
+    
+    return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
+      return Promise<[T]> { fulfill, reject in
         request.responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
           switch response.result {
           case .success(let value):
@@ -149,18 +166,18 @@ open class ObjectMapperDataSource: DataSource {
             reject(error)
           }
         }
-      }.catch { error in
-        reject(error)
       }
     }
+    
   }
   
   open override class func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
-    return fetch(path: T.pathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
+    return fetch(path: T.urlPathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
   }
   
   // MARK: GET Single
   open class func fetch<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
+    
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
       return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
         request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
@@ -174,21 +191,6 @@ open class ObjectMapperDataSource: DataSource {
       }
     }
     
-    
-//    return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
-//      dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
-//        request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
-//          switch response.result {
-//          case .success(let value):
-//            fulfill(value)
-//          case .failure(let error):
-//            reject(error)
-//          }
-//        }
-//      }.catch { error in
-//        reject(error)
-//      }
-//    }
   }
   
   open override class func getById<T>(id: String) -> Promise<T?> where T:ObjectMapperDataModel {

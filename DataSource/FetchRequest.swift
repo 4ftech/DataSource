@@ -31,7 +31,7 @@ public class FetchRequest {
   
   // MARK: - Public Fetching Methods
   
-  public func fetch<T: BaseDataModel>() -> Promise<[T]> {
+  public func fetch<T>() -> Promise<[T]> where T: BaseDataModel {
     return T.DataSourceType.fetch(request: self)
   }
   
