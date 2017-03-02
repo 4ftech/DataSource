@@ -166,7 +166,6 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
   open func alamofireRequest(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> DataRequest {
     // Combine parameters
     var allParameters: Parameters = defaultParameters ?? [:]
-    NSLog("\(defaultParameters)")
     if let parameters = parameters {
       allParameters.append(with: parameters)
     }

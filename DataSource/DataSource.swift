@@ -9,36 +9,6 @@
 import Foundation
 import PromiseKit
 
-//public protocol DataSource {
-//  static var primaryKey: String? { get }
-//  
-//  static func fetch<T>(request: FetchRequest) -> Promise<[T]>
-//  static func getById<T>(id: String) -> Promise<T?>
-//  static func save<T>(item: T) -> Promise<T>
-//  static func delete<T>(item: T) -> Promise<Bool>
-//}
-//
-//public extension DataSource {
-//  static var primaryKey: String? { return nil }
-//  
-//  @discardableResult
-//  static func getById<T>(id: String) -> Promise<T?> {
-//    if let primaryKey = primaryKey {
-//      let request = FetchRequest().whereKey(primaryKey, equalTo: id)
-//      
-//      return Promise { fulfill, reject in
-//        self.fetch(request: request).then { results in
-//          fulfill(results.first)
-//        }.catch { error in
-//          reject(error)
-//        }
-//      }
-//    }
-//    
-//    return Promise(value: nil)
-//  }
-//}
-
 
 public protocol DataSource {
   init()
