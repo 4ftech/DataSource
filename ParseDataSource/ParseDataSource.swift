@@ -26,6 +26,32 @@ open class ParseDataModel: PFObject, BaseDataModel {
   public override required init() {
     super.init()
   }
+  
+  open class var includeKeys: [String:ParseDataModel.Type] {
+    return [:]
+  }
+
+  open override class func query() -> PFQuery<PFObject>? {
+    let q = super.query()
+    includeKeysInQuery(q)
+    return q
+  }
+  
+  class func includeKeysInQuery(_ query: PFQuery<PFObject>?) {
+    includeKeysInQuery(query, withPrefix: nil)
+  }
+  
+  class func includeKeysInQuery(_ query: PFQuery<PFObject>?, withPrefix prefix: String?) {
+    for (key, type) in includeKeys {
+      var k: String = key
+      if let p: String = prefix {
+        k = "\(p).\(key)"
+      }
+      
+      query?.includeKey(k)
+      type.includeKeysInQuery(query, withPrefix: k)
+    }
+  }
 }
 
 public class ParseDataSource: DataSource {
