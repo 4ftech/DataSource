@@ -7,12 +7,12 @@
 		<key>DataSource.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<key>ObjectMapperDataSource.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>6</integer>
+			<integer>4</integer>
 		</dict>
 		<key>ParseDataSource.xcscheme</key>
 		<dict>

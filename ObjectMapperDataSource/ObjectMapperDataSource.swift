@@ -196,7 +196,16 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
   open func fetchArray<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
       return Promise<[T]> { fulfill, reject in
-        request.responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
+        request
+          .responseJSON { response in
+            switch response.result {
+            case .success(let value):
+            NSLog("V: \(value)")
+            case .failure(let error):
+            NSLog("E: \(error)")
+            }
+          }
+          .responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
           switch response.result {
           case .success(let value):
             fulfill(value)

@@ -20,7 +20,6 @@
 		705D2DFC1E5F909D005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DA31E5E4064005D3A5F /* DataSource.framework */; };
 		705D2DFE1E5F91B5005D3A5F /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DFD1E5F91B5005D3A5F /* Alamofire.framework */; };
 		705D2E001E5F91C1005D3A5F /* AlamofireObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DFF1E5F91C1005D3A5F /* AlamofireObjectMapper.framework */; };
-		705D2E021E5F91CB005D3A5F /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E011E5F91CB005D3A5F /* ObjectMapper.framework */; };
 		705D2E041E5F91DB005D3A5F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E031E5F91DB005D3A5F /* Parse.framework */; };
 		705D2E051E5F91E2005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
 		705D2E071E5F91F2005D3A5F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E061E5F91F2005D3A5F /* Bolts.framework */; };
@@ -32,6 +31,7 @@
 		705D2F9E1E669510005D3A5F /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9D1E669510005D3A5F /* RxCocoa.framework */; };
 		705D2FA01E669514005D3A5F /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9F1E669514005D3A5F /* RxBlocking.framework */; };
 		70C407B01E6802C500A14EB7 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407AF1E6802C500A14EB7 /* Utils.swift */; };
+		70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70C408791E6AF74500A14EB7 /* ObjectMapper.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +52,6 @@
 		705D2DFA1E5F8FFD005D3A5F /* ObjectMapperDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapperDataSource.swift; sourceTree = "<group>"; };
 		705D2DFD1E5F91B5005D3A5F /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		705D2DFF1E5F91C1005D3A5F /* AlamofireObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlamofireObjectMapper.framework; path = Carthage/Build/iOS/AlamofireObjectMapper.framework; sourceTree = "<group>"; };
-		705D2E011E5F91CB005D3A5F /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		705D2E031E5F91DB005D3A5F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		705D2E061E5F91F2005D3A5F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Carthage/Build/iOS/Bolts.framework; sourceTree = "<group>"; };
 		705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRequest.swift; sourceTree = "<group>"; };
@@ -62,6 +61,7 @@
 		705D2F9D1E669510005D3A5F /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		705D2F9F1E669514005D3A5F /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
 		70C407AF1E6802C500A14EB7 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		70C408791E6AF74500A14EB7 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */,
 				705D2DCB1E5F6B2F005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D2FA01E669514005D3A5F /* RxBlocking.framework in Frameworks */,
 				705D2F9C1E66950C005D3A5F /* RxSwift.framework in Frameworks */,
@@ -94,7 +95,6 @@
 				705D2DFC1E5F909D005D3A5F /* DataSource.framework in Frameworks */,
 				705D2E091E5F9222005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D2DFE1E5F91B5005D3A5F /* Alamofire.framework in Frameworks */,
-				705D2E021E5F91CB005D3A5F /* ObjectMapper.framework in Frameworks */,
 				705D2E001E5F91C1005D3A5F /* AlamofireObjectMapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,12 +141,12 @@
 		705D2DC91E5F6B2F005D3A5F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				70C408791E6AF74500A14EB7 /* ObjectMapper.framework */,
 				705D2F9F1E669514005D3A5F /* RxBlocking.framework */,
 				705D2F9D1E669510005D3A5F /* RxCocoa.framework */,
 				705D2F9B1E66950C005D3A5F /* RxSwift.framework */,
 				705D2E061E5F91F2005D3A5F /* Bolts.framework */,
 				705D2E031E5F91DB005D3A5F /* Parse.framework */,
-				705D2E011E5F91CB005D3A5F /* ObjectMapper.framework */,
 				705D2DFF1E5F91C1005D3A5F /* AlamofireObjectMapper.framework */,
 				705D2DFD1E5F91B5005D3A5F /* Alamofire.framework */,
 				705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */,
