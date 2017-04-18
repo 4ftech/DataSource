@@ -70,7 +70,7 @@ open class ObjectMapperDataModel: BaseDataModel, Mappable {
   }
 }
 
-public protocol ObjectMapperDataSource: DataSource {
+public protocol ObjectMapperDataSourceProtocol: DataSource {
   var defaultHeaders: HTTPHeaders? { get }
   var defaultParameters: Parameters? { get }
   
@@ -100,7 +100,7 @@ public protocol ObjectMapperDataSource: DataSource {
   func saveMapped<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel
 }
 
-open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
+open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   open var baseURL: String { return "" }
   
   open var defaultHeaders: HTTPHeaders? { return nil }
@@ -129,7 +129,7 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
     case .containsAll: break
     case .notContainedIn: break
     case .regex: break
-    case .regexOptions: break
+    case .nearCoordinates: break
     }
   }
   
@@ -137,10 +137,12 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
     var parameters: Parameters = [:]
     
     for (key, object) in request.conditions {
-      if let conditionObject = object as? [FetchQueryCondition:Any] {
+      if let conditionObject = object as? [String:Any] {
         // Not sure these should apply in a default API case
         for (condition, value) in conditionObject {
-          update(parameters: &parameters, key: key, condition: condition, value: value)
+          if let condition = FetchQueryCondition(rawValue: condition) {
+            update(parameters: &parameters, key: key, condition: condition, value: value)
+          }
         }
       } else {
         parameters[key] = object
@@ -175,6 +177,9 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
     if let headers = headers {
       allHeaders.append(with: headers)
     }
+    
+    NSLog("\(fullURL(forPath: path))")
+    NSLog("\(allParameters)")
     
     return Alamofire.request(
       fullURL(forPath: path),
@@ -297,7 +302,7 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSource {
 }
 
 
-open class BaseObjectMapperDataSource: EmptyObjectMapperDataSource {
+open class ObjectMapperDataSource: EmptyObjectMapperDataSource {
   open override func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
     return fetchArray(path: T.urlPathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
   }

@@ -1,0 +1,28 @@
+{
+  "commitish" : "4.1.8",
+  "iOS" : [
+    {
+      "hash" : "1e371a2becef1409b78c61ffa377c5d2f09eb5106678ffecf7e343f80c3574e3",
+      "name" : "PromiseKit"
+    }
+  ],
+  "xcodeVersion" : "Xcode 8.3.1\nBuild version 8E1000a",
+  "watchOS" : [
+    {
+      "hash" : "2eecd55e993906cf973a1e8f9910c43fc73062ba36c9cb27564bd1853652d54f",
+      "name" : "PromiseKit"
+    }
+  ],
+  "tvOS" : [
+    {
+      "hash" : "7f9b2ef794891abf8bf7eda4993fdffb400243a90af22d21af840d5953d63663",
+      "name" : "PromiseKit"
+    }
+  ],
+  "Mac" : [
+    {
+      "hash" : "a311aab5036b446705f190ccd9f81328e4d70e5d80e57a037d7f6bbfba20522e",
+      "name" : "PromiseKit"
+    }
+  ]
+}

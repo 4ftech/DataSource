@@ -1,0 +1,28 @@
+{
+  "commitish" : "4.4.0",
+  "iOS" : [
+    {
+      "hash" : "7f91315eafedb0b1310ae73401dc8bde01c01b7ea5a0b95aa7ae7241e2e363ee",
+      "name" : "Alamofire"
+    }
+  ],
+  "xcodeVersion" : "Xcode 8.3.1\nBuild version 8E1000a",
+  "watchOS" : [
+    {
+      "hash" : "812da2f73dfbec7707f7a9b28d5b333c5a41f8b8cf9bdeeacbda74bf06db7d34",
+      "name" : "Alamofire"
+    }
+  ],
+  "tvOS" : [
+    {
+      "hash" : "40b9c828dea68e3a35ea61e58c05558706aa19071d5e0904319f24d8dcd4d344",
+      "name" : "Alamofire"
+    }
+  ],
+  "Mac" : [
+    {
+      "hash" : "35e3be1aa7d49514747957a2aa31cc4a0b9a39c27a20e2014cb248fe8a01acc4",
+      "name" : "Alamofire"
+    }
+  ]
+}

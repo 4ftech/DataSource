@@ -64,28 +64,33 @@ public class ParseDataSource: DataSource {
     
     if let request = request {
       for (key, object) in request.conditions {
-        if let conditionObject = object as? [FetchQueryCondition:Any] {
+        if let conditionObject = object as? [String:Any] {
           for (condition, object) in conditionObject {
-            switch condition {
-            case .notEqualTo:
-              query.whereKey(key, notEqualTo: object)
-            case .greaterThan:
-              query.whereKey(key, greaterThan: object)
-            case .greaterThanOrEqualTo:
-              query.whereKey(key, greaterThanOrEqualTo: object)
-            case .lessThan:
-              query.whereKey(key, lessThan: object)
-            case .lessThanOrEqualTo:
-              query.whereKey(key, lessThanOrEqualTo: object)
-            case .containedIn:
-              query.whereKey(key, containedIn: object as! [Any])
-            case .containsAll:
-              query.whereKey(key, containsAllObjectsIn: object as! [Any])
-            case .notContainedIn:
-              query.whereKey(key, notContainedIn: object as! [Any])
-            case .regex:
-              query.whereKey(key, matchesRegex: object as! String, modifiers: conditionObject[.regexOptions] as? String)
-            case .regexOptions: break
+            if let condition = FetchQueryCondition(rawValue: condition) {
+              switch condition {
+              case .notEqualTo:
+                query.whereKey(key, notEqualTo: object)
+              case .greaterThan:
+                query.whereKey(key, greaterThan: object)
+              case .greaterThanOrEqualTo:
+                query.whereKey(key, greaterThanOrEqualTo: object)
+              case .lessThan:
+                query.whereKey(key, lessThan: object)
+              case .lessThanOrEqualTo:
+                query.whereKey(key, lessThanOrEqualTo: object)
+              case .containedIn:
+                query.whereKey(key, containedIn: object as! [Any])
+              case .containsAll:
+                query.whereKey(key, containsAllObjectsIn: object as! [Any])
+              case .notContainedIn:
+                query.whereKey(key, notContainedIn: object as! [Any])
+              case .regex:
+                let modifiers = conditionObject[FetchQueryOption.regexOption.rawValue] as? String
+                query.whereKey(key, matchesRegex: object as! String, modifiers: modifiers)
+              case .nearCoordinates:
+                let coordinates = object as! CLLocationCoordinate2D
+                query.whereKey(key, nearGeoPoint: PFGeoPoint(latitude: coordinates.latitude, longitude: coordinates.longitude), withinMiles: 1)
+              }
             }
           }
         } else {

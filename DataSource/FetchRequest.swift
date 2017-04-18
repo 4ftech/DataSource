@@ -8,6 +8,7 @@
 
 import Foundation
 import PromiseKit
+import CoreLocation
 
 public class FetchRequest {
   public var offset: Int?
@@ -122,6 +123,12 @@ public class FetchRequest {
   @discardableResult
   public func whereKey(_ key: String, matchesRegex regex: String, modifiers: String? = nil) -> FetchRequest {
     self.fetchConditions.whereKey(key, matchesRegex: regex, modifiers: modifiers)
+    return self
+  }
+  
+  @discardableResult
+  public func whereKey(_ key: String, nearCoordinates coordinates: CLLocationCoordinate2D) -> FetchRequest {
+    self.fetchConditions.whereKey(key, nearCoordinates: coordinates)
     return self
   }
 }
