@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 2/17/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 
@@ -21,7 +21,7 @@ public enum CRUDUserInfoKeys: String {
 
 public extension NotificationCenter {
   func crudNotificationName(_ objectClassName: String) -> String {
-    return "com.oinkist.CollectionLoader.CRUDNotification.\(objectClassName)"
+    return "co.bukapp.CollectionLoader.CRUDNotification.\(objectClassName)"
   }
   
   func postCRUDNotification<T: BaseDataModel>(_ notificationType: CRUDType, crudObject: T, senderObject: AnyObject? = nil) {

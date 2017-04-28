@@ -3,7 +3,7 @@
 //  DataSource
 //
 //  Created by Nick Kuyakanon on 2/22/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -21,17 +21,18 @@ public protocol DataSource {
 
 public protocol BaseDataModel: class, Equatable, Hashable {
   static var sharedDataSource: DataSource { get }
+  static var filters: [Filter] { get }
   
   var objectId: String? { get set }
   var updatedAt: Date? { get }
   
   var name: String? { get set }
-
+  
   init()
   
   static func fetchRequest(sortDescriptor: NSSortDescriptor?, offset: Int?, limit: Int?) -> FetchRequest
   static func getById<T:BaseDataModel>(id: String) -> Promise<T?>
-  static func getAll<T:BaseDataModel>() -> Promise<[T]>
+  static func getAll<T:BaseDataModel>(filters: [Filter]?) -> Promise<[T]>
   
   func save<T:BaseDataModel>() -> Promise<T>
   func delete() -> Promise<Bool>
@@ -47,8 +48,8 @@ public extension BaseDataModel {
     return sharedDataSource.getById(id: id)
   }
   
-  public static func getAll<T:BaseDataModel>() -> Promise<[T]> {
-    return fetchRequest().fetch()
+  public static func getAll<T:BaseDataModel>(filters: [Filter]? = nil) -> Promise<[T]> {
+    return fetchRequest().apply(filters: filters).fetch()
   }
   
   @discardableResult

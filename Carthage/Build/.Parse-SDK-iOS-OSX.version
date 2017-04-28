@@ -2,20 +2,20 @@
   "commitish" : "1.14.4",
   "iOS" : [
     {
-      "hash" : "93d081fd34e298eace99d71afbb738d453deed279a083922083af01c3c405a98",
+      "hash" : "c5781320bc132f41b95c41df624171168935ea6e9eaac5bf1abe970fbbf77429",
       "name" : "Parse"
     }
   ],
-  "xcodeVersion" : "Xcode 8.3.1\nBuild version 8E1000a",
+  "xcodeVersion" : "Xcode 8.3.2\nBuild version 8E2002",
   "watchOS" : [
     {
-      "hash" : "06e8ee2c5df64db716734b2043921d6a556a13d2d0c3b355b41d92d973bddbc4",
+      "hash" : "e7ba5a259865fd38ebd47de89d4fe21c1e40f1d8bedd5e1c5360edf7c9dadfde",
       "name" : "Parse"
     }
   ],
   "tvOS" : [
     {
-      "hash" : "7e342e08cea8462552d0c04a2741a751103ef3270a1a163a5b0a9af23d0b88a4",
+      "hash" : "498be6e3ba80062ebcf23468b525a69a9ba775317f600a90ebc06fcfc90fdb11",
       "name" : "Parse"
     }
   ],

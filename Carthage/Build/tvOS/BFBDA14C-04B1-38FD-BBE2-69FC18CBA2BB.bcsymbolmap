@@ -12,7 +12,7 @@ BCSymbolMap Version: 2.0
 -[BFTaskCompletionSource task]
 -[BFTaskCompletionSource .cxx_destruct]
 _OBJC_IVAR_$_BFTaskCompletionSource._task
-Apple LLVM version 8.1.0 (clang-802.0.41)
+Apple LLVM version 8.1.0 (clang-802.0.42)
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Bolts-ObjC/Bolts/Common/BFTaskCompletionSource.m
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Bolts-ObjC
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Bolts-ObjC/Bolts/Common/BFTaskCompletionSource.h

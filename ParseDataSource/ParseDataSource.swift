@@ -3,7 +3,7 @@
 //  DataSource
 //
 //  Created by Nick Kuyakanon on 2/23/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -13,7 +13,10 @@ import Parse
 
 open class ParseDataModel: PFObject, BaseDataModel {
   public static var sharedDataSource: DataSource = ParseDataSource()
-
+  open class var filters: [Filter] {
+    return []
+  }
+  
   open var name: String? {
     get {
       return self["name"] as? String

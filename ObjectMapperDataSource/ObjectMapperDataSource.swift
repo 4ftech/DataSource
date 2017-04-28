@@ -3,7 +3,7 @@
 //  DataSource
 //
 //  Created by Nick Kuyakanon on 2/23/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -18,6 +18,10 @@ open class ObjectMapperDataModel: BaseDataModel, Mappable {
   static var _sharedDataSource: ObjectMapperDataSource!
   open class var sharedDataSource: DataSource {
     return _sharedDataSource
+  }
+  
+  open class var filters: [Filter] {
+    return []
   }
   
   public var objectId: String?

@@ -4,7 +4,7 @@ BCSymbolMap Version: 2.0
 -[PFWeakValue setWeakObject:]
 -[PFWeakValue .cxx_destruct]
 _OBJC_IVAR_$_PFWeakValue._weakObject
-Apple LLVM version 8.1.0 (clang-802.0.41)
+Apple LLVM version 8.1.0 (clang-802.0.42)
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Parse-SDK-iOS-OSX/Parse/Internal/PFWeakValue.m
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Parse-SDK-iOS-OSX
 /Users/nickuya/Development/iOS/frameworks/DataSource/Carthage/Checkouts/Parse-SDK-iOS-OSX/Parse/Internal/PFWeakValue.h

@@ -30,6 +30,7 @@
 		705D2F9C1E66950C005D3A5F /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9B1E66950C005D3A5F /* RxSwift.framework */; };
 		705D2F9E1E669510005D3A5F /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9D1E669510005D3A5F /* RxCocoa.framework */; };
 		705D2FA01E669514005D3A5F /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9F1E669514005D3A5F /* RxBlocking.framework */; };
+		70961C0A1EA7F636007CD33E /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C091EA7F636007CD33E /* Filter.swift */; };
 		70C407B01E6802C500A14EB7 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407AF1E6802C500A14EB7 /* Utils.swift */; };
 		70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70C408791E6AF74500A14EB7 /* ObjectMapper.framework */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 		705D2F9B1E66950C005D3A5F /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		705D2F9D1E669510005D3A5F /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		705D2F9F1E669514005D3A5F /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
+		70961C091EA7F636007CD33E /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		70C407AF1E6802C500A14EB7 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		70C408791E6AF74500A14EB7 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +134,7 @@
 				705D2DAE1E5E4073005D3A5F /* DataSource.swift */,
 				705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */,
 				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
+				70961C091EA7F636007CD33E /* Filter.swift */,
 				705D2F991E669409005D3A5F /* NotificationCenter.swift */,
 				70C407AF1E6802C500A14EB7 /* Utils.swift */,
 			);
@@ -394,6 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				70C407B01E6802C500A14EB7 /* Utils.swift in Sources */,
+				70961C0A1EA7F636007CD33E /* Filter.swift in Sources */,
 				705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */,
 				705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */,
 				705D2DAF1E5E4073005D3A5F /* DataSource.swift in Sources */,
@@ -537,7 +541,7 @@
 				INFOPLIST_FILE = DataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -562,7 +566,7 @@
 				INFOPLIST_FILE = DataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -586,7 +590,7 @@
 				INFOPLIST_FILE = ParseDataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource.ParseDataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ParseDataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -611,7 +615,7 @@
 				INFOPLIST_FILE = ParseDataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource.ParseDataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ParseDataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -635,7 +639,7 @@
 				INFOPLIST_FILE = ObjectMapperDataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource.ObjectMapperDataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ObjectMapperDataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -660,7 +664,7 @@
 				INFOPLIST_FILE = ObjectMapperDataSource/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.DataSource.ObjectMapperDataSource;
+				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ObjectMapperDataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
