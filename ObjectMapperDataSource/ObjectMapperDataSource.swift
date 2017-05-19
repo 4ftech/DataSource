@@ -26,18 +26,19 @@ open class ObjectMapperDataModel: BaseDataModel, Mappable {
   
   public var objectId: String?
   public var name: String?
+  public var createdAt: Date?
   public var updatedAt: Date?
   
   open class var urlPath: String { return "" }
   
-  open class var keyPath: String? { return nil }
+  open class var objectKeyPath: String? { return nil }
   open class var listKeyPath: String? { return nil }
   
   open class var urlPathForList: String {
     return urlPath
   }
   
-  open class func urlPath(forId id: String) -> String {
+  open class func urlPath(forId id: String) -> String {    
     return "\(urlPath)/\(id)"
   }
   
@@ -71,7 +72,7 @@ open class ObjectMapperDataModel: BaseDataModel, Mappable {
     } else {
       return lhs == rhs
     }
-  }
+  }  
 }
 
 public protocol ObjectMapperDataSourceProtocol: DataSource {
@@ -100,12 +101,15 @@ public protocol ObjectMapperDataSourceProtocol: DataSource {
   func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters?, encoding: ParameterEncoding, headers: HTTPHeaders?) -> Promise<DataRequest>
   
   func fetchArray<T>(path: String, withParameters parameters: Parameters?, headers: HTTPHeaders?, keyPath: String?) -> Promise<[T]> where T:ObjectMapperDataModel
-  func fetchOne<T>(path: String, withParameters parameters: Parameters?, headers: HTTPHeaders?, keyPath: String?) -> Promise<T?> where T:ObjectMapperDataModel
+  func fetchOne<T>(path: String, withParameters parameters: Parameters?, headers: HTTPHeaders?, keyPath: String?) -> Promise<T> where T:ObjectMapperDataModel
   func saveMapped<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel
 }
 
 open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   open var baseURL: String { return "" }
+  open var limitKey: String { return "limit" }
+  open var offsetKey: String { return "offset" }
+  open var requireTrailingSlash: Bool { return false }
   
   open var defaultHeaders: HTTPHeaders? { return nil }
   open var defaultParameters: Parameters? { return nil }
@@ -146,6 +150,16 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
         for (condition, value) in conditionObject {
           if let condition = FetchQueryCondition(rawValue: condition) {
             update(parameters: &parameters, key: key, condition: condition, value: value)
+          } else {
+            // This should be the case of equalTo a JSON object (i.e. [String:Any])
+            // conditionObject is [String:Any]
+            // condition is String
+            // value is Any
+            
+            var parameterValue: [String:Any] = (parameters[key] ?? [:]) as! [String:Any]
+            parameterValue[condition] = value
+
+            parameters[key] = parameterValue
           }
         }
       } else {
@@ -154,17 +168,36 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     }
     
     if let limit = request.limit {
-      parameters["limit"] = limit
+      parameters[self.limitKey] = limit
     }
     
-    if let offset = request.offset {
-      parameters["offset"] = offset
+    if let offset = request.offset, offset > 0 {
+      parameters[self.offsetKey] = offset
     }
     
     return parameters
   }
   
   open func fullURL(forPath path: String) -> String {
+    // Don't want base URL to end with a slash
+    var baseURL: String = self.baseURL
+    let lastIndex: String.Index = baseURL.index(before: baseURL.endIndex)
+    if baseURL[lastIndex] == "/" {
+      baseURL.remove(at: lastIndex)
+    }
+    
+    // Don't want path to start with a slash
+    var path: String = path
+    if path[path.startIndex] == "/" {
+      path.remove(at: path.startIndex)
+    }
+    
+    // See if there needs to be a trailing slash
+    let pathLastIndex: String.Index = path.index(before: path.endIndex)
+    if path[pathLastIndex] != "/" && requireTrailingSlash {
+      path = "\(path)/"
+    }
+    
     return "\(baseURL)/\(path)"
   }
   
@@ -182,8 +215,9 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
       allHeaders.append(with: headers)
     }
     
-    NSLog("\(fullURL(forPath: path))")
-    NSLog("\(allParameters)")
+    NSLog("alamofireRequest for: \(fullURL(forPath: path))")
+    NSLog("allParameters: \(allParameters)")
+    NSLog("allHeaders: \(allHeaders)")
     
     return Alamofire.request(
       fullURL(forPath: path),
@@ -191,7 +225,7 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
       parameters: allParameters,
       encoding: encoding,
       headers: allHeaders
-      ).validate()
+    ).validate()
   }
   
   open func dataRequestPromise(forURLPath path: String, method: HTTPMethod, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
@@ -203,17 +237,19 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   
   // MARK: - GET Array
   open func fetchArray<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<[T]> where T:ObjectMapperDataModel {
+    
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
       return Promise<[T]> { fulfill, reject in
         request
-          .responseJSON { response in
-            switch response.result {
-            case .success(let value):
-            NSLog("V: \(value)")
-            case .failure(let error):
-            NSLog("E: \(error)")
-            }
-          }
+          //          .responseJSON { response in
+          //            switch response.result {
+          //            case .success(let value):
+          //              NSLog("V: \(value)")
+          //            case .failure(let error):
+          //              NSLog("E: \(error)")
+          //            }
+          //          }
+          
           .responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
           switch response.result {
           case .success(let value):
@@ -228,10 +264,10 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   }
   
   // MARK: GET Single
-  open func fetchOne<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T?> where T:ObjectMapperDataModel {
+  open func fetchOne<T>(path: String, withParameters parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = nil) -> Promise<T> where T:ObjectMapperDataModel {
     
     return dataRequestPromise(forURLPath: path, method: fetchMethod, parameters: parameters, encoding: fetchEncoding, headers: headers).then { request in
-      return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
+      return Promise<T> { (fulfill: @escaping (T) -> Void, reject) in
         request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
           switch response.result {
           case .success(let value):
@@ -249,7 +285,7 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   open func saveMapped<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel, T:Mappable {
     let method: HTTPMethod = item.isNew ? insertMethod : updateMethod
     let encoding: ParameterEncoding = item.isNew ? insertEncoding : updateEncoding
-    
+
     return dataRequestPromise(forURLPath: item.pathForObject, method: method, parameters: item.toJSON(), encoding: encoding).then { request in
       return Promise<T> { fulfill, reject in
         request.responseObject { (response: DataResponse<T>) in
@@ -296,8 +332,8 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     return Promise<[T]> { _,_ in }
   }
   
-  public func getById<T>(id: String) -> Promise<T?> {
-    return Promise<T?> { _,_ in }
+  public func getById<T>(id: String) -> Promise<T> {
+    return Promise<T> { _,_ in }
   }
   
   public func save<T>(item: T) -> Promise<T> {
@@ -311,8 +347,8 @@ open class ObjectMapperDataSource: EmptyObjectMapperDataSource {
     return fetchArray(path: T.urlPathForList, withParameters: parameters(forFetchRequest: request), keyPath: T.listKeyPath)
   }
   
-  open override func getById<T>(id: String) -> Promise<T?> where T:ObjectMapperDataModel {
-    return fetchOne(path: T.urlPath(forId: id), keyPath: T.keyPath)
+  open override func getById<T>(id: String) -> Promise<T> where T:ObjectMapperDataModel {
+    return fetchOne(path: T.urlPath(forId: id), keyPath: T.objectKeyPath)
   }
   
   open override func save<T>(item: T) -> Promise<T> where T:ObjectMapperDataModel {

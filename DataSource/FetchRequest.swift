@@ -32,8 +32,8 @@ public class FetchRequest {
   
   // MARK: - Public Fetching Methods
   
-  public func fetch<T>() -> Promise<[T]> where T: BaseDataModel {
-    return T.sharedDataSource.fetch(request: self)
+  public func fetch<T>(filters: [Filter]? = nil) -> Promise<[T]> where T: BaseDataModel {
+    return T.sharedDataSource.fetch(request: self.apply(filters: filters))
   }
   
   

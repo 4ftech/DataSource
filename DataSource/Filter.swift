@@ -204,7 +204,7 @@ open class DataSourceSelectFilter<T>: SelectFilter<String> where T:BaseDataModel
       
       return Promise(value: self.filterOptions)
     }.catch { error in
-      NSLog("\(error)")
+      NSLog("Filter.loadOptions: \(error)")
     }
   }
 }

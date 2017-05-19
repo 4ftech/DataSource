@@ -31,7 +31,6 @@
 		705D2F9E1E669510005D3A5F /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9D1E669510005D3A5F /* RxCocoa.framework */; };
 		705D2FA01E669514005D3A5F /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9F1E669514005D3A5F /* RxBlocking.framework */; };
 		70961C0A1EA7F636007CD33E /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C091EA7F636007CD33E /* Filter.swift */; };
-		70C407B01E6802C500A14EB7 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407AF1E6802C500A14EB7 /* Utils.swift */; };
 		70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70C408791E6AF74500A14EB7 /* ObjectMapper.framework */; };
 /* End PBXBuildFile section */
 
@@ -62,7 +61,6 @@
 		705D2F9D1E669510005D3A5F /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		705D2F9F1E669514005D3A5F /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
 		70961C091EA7F636007CD33E /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
-		70C407AF1E6802C500A14EB7 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		70C408791E6AF74500A14EB7 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,7 +134,6 @@
 				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
 				70961C091EA7F636007CD33E /* Filter.swift */,
 				705D2F991E669409005D3A5F /* NotificationCenter.swift */,
-				70C407AF1E6802C500A14EB7 /* Utils.swift */,
 			);
 			path = DataSource;
 			sourceTree = "<group>";
@@ -216,7 +213,6 @@
 				705D2D9F1E5E4064005D3A5F /* Frameworks */,
 				705D2DA01E5E4064005D3A5F /* Headers */,
 				705D2DA11E5E4064005D3A5F /* Resources */,
-				705D2FA11E66957A005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -235,7 +231,6 @@
 				705D2DCE1E5F6CA6005D3A5F /* Frameworks */,
 				705D2DCF1E5F6CA6005D3A5F /* Headers */,
 				705D2DD01E5F6CA6005D3A5F /* Resources */,
-				705D2E081E5F91F9005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -254,7 +249,6 @@
 				705D2DEE1E5F8FF1005D3A5F /* Frameworks */,
 				705D2DEF1E5F8FF1005D3A5F /* Headers */,
 				705D2DF01E5F8FF1005D3A5F /* Resources */,
-				705D2E0A1E5F9227005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -338,65 +332,11 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		705D2E081E5F91F9005D3A5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Bolts.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Parse.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-		705D2E0A1E5F9227005D3A5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ObjectMapper.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AlamofireObjectMapper.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-		705D2FA11E66957A005D3A5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		705D2D9E1E5E4064005D3A5F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70C407B01E6802C500A14EB7 /* Utils.swift in Sources */,
 				70961C0A1EA7F636007CD33E /* Filter.swift in Sources */,
 				705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */,
 				705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */,

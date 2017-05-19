@@ -12,24 +12,24 @@ import RxSwift
 import RxCocoa
 
 public enum CRUDType: String {
-  case Create = "create", Update = "update", Delete = "delete"
+  case create = "create", update = "update", delete = "delete"
 }
 
 public enum CRUDUserInfoKeys: String {
-  case NotificationType = "notificationType", Object = "object", ObjectIndex = "index"
+  case notificationType = "notificationType", object = "object", objectIndex = "index"
 }
 
 public extension NotificationCenter {
   func crudNotificationName(_ objectClassName: String) -> String {
-    return "co.bukapp.CollectionLoader.CRUDNotification.\(objectClassName)"
+    return "co.bukapp.DataSource.CRUDNotification.\(objectClassName)"
   }
   
   func postCRUDNotification<T: BaseDataModel>(_ notificationType: CRUDType, crudObject: T, senderObject: AnyObject? = nil) {
     let name = crudNotificationName(String(describing: type(of: crudObject)))
     NSLog("Posted for: \(name)")
     let userInfo: [String:Any] = [
-      CRUDUserInfoKeys.NotificationType.rawValue: notificationType.rawValue,
-      CRUDUserInfoKeys.Object.rawValue: crudObject
+      CRUDUserInfoKeys.notificationType.rawValue: notificationType.rawValue,
+      CRUDUserInfoKeys.object.rawValue: crudObject
     ]
     
     post(name: Notification.Name(rawValue: name), object: senderObject, userInfo: userInfo)
@@ -45,15 +45,15 @@ public extension NotificationCenter {
 
 public extension Notification {
   var crudObject: Any {
-    return userInfo![CRUDUserInfoKeys.Object.rawValue]!
+    return userInfo![CRUDUserInfoKeys.object.rawValue]!
   }
   
   var crudObjectIndex: Int? {
-    return userInfo![CRUDUserInfoKeys.ObjectIndex.rawValue] as? Int
+    return userInfo![CRUDUserInfoKeys.objectIndex.rawValue] as? Int
   }
   
   
   var crudNotificationType: CRUDType {
-    return CRUDType(rawValue: userInfo![CRUDUserInfoKeys.NotificationType.rawValue] as! String)!
+    return CRUDType(rawValue: userInfo![CRUDUserInfoKeys.notificationType.rawValue] as! String)!
   }
 }

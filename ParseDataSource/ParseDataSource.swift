@@ -30,7 +30,7 @@ open class ParseDataModel: PFObject, BaseDataModel {
     super.init()
   }
   
-  open class var includeKeys: [String:ParseDataModel.Type] {
+  open class var includeKeys: [String:ParseDataModel.Type] {    
     return [:]
   }
 
@@ -129,15 +129,17 @@ public class ParseDataSource: DataSource {
     }
   }
   
-  open func getById<T>(id: String) -> Promise<T?> {
+  open func getById<T>(id: String) -> Promise<T> {
     let query = self.query(ofObjectType: T.self as! ParseDataModel.Type)
 
-    return Promise<T?> { (fulfill: @escaping (T?) -> Void, reject) in
+    return Promise<T> { (fulfill: @escaping (T) -> Void, reject) in
       query.getObjectInBackground(withId: id) { (result, error) in
-        if let error = error {
+        if let result = result as? T {
+          fulfill(result)
+        } else if let error = error {
           reject(error)
-        } else {          
-          fulfill(result as? T)
+        } else {
+          reject(NSError(domain: PFParseErrorDomain, code: PFErrorCode.errorInternalServer.rawValue, userInfo: nil))
         }
       }
     }

@@ -15,7 +15,7 @@ public protocol DataSource {
   func fetch<T>(request: FetchRequest) -> Promise<[T]>
   func save<T>(item: T) -> Promise<T>
   func delete<T>(item: T) -> Promise<Bool>
-  func getById<T>(id: String) -> Promise<T?>
+  func getById<T>(id: String) -> Promise<T>
 }
 
 
@@ -24,6 +24,7 @@ public protocol BaseDataModel: class, Equatable, Hashable {
   static var filters: [Filter] { get }
   
   var objectId: String? { get set }
+  var createdAt: Date? { get }
   var updatedAt: Date? { get }
   
   var name: String? { get set }
@@ -31,7 +32,7 @@ public protocol BaseDataModel: class, Equatable, Hashable {
   init()
   
   static func fetchRequest(sortDescriptor: NSSortDescriptor?, offset: Int?, limit: Int?) -> FetchRequest
-  static func getById<T:BaseDataModel>(id: String) -> Promise<T?>
+  static func getById<T:BaseDataModel>(id: String) -> Promise<T>
   static func getAll<T:BaseDataModel>(filters: [Filter]?) -> Promise<[T]>
   
   func save<T:BaseDataModel>() -> Promise<T>
@@ -44,14 +45,14 @@ public extension BaseDataModel {
   }
   
   @discardableResult
-  public static func getById<T:BaseDataModel>(id: String) -> Promise<T?> {
+  public static func getById<T:BaseDataModel>(id: String) -> Promise<T> {
     return sharedDataSource.getById(id: id)
   }
   
   public static func getAll<T:BaseDataModel>(filters: [Filter]? = nil) -> Promise<[T]> {
-    return fetchRequest().apply(filters: filters).fetch()
+    return fetchRequest().fetch(filters: filters)
   }
-  
+
   @discardableResult
   public func save<T:BaseDataModel>() -> Promise<T> {
     return type(of: self).sharedDataSource.save(item: self as! T)
@@ -61,7 +62,6 @@ public extension BaseDataModel {
   public func delete() -> Promise<Bool> {
     return type(of: self).sharedDataSource.delete(item: self)
   }
- 
   
   public var hashValue: Int {
     return objectId?.hashValue ?? name?.hashValue ?? 0
