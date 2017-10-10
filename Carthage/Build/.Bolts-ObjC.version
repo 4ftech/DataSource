@@ -2,26 +2,7 @@
   "commitish" : "1.8.4",
   "iOS" : [
     {
-      "hash" : "3b88f2b3a918c1e2ffa324be3d7345602087d8f13e70d605bee8fa25ff51a7ef",
-      "name" : "Bolts"
-    }
-  ],
-  "xcodeVersion" : "Xcode 8.3.2\nBuild version 8E2002",
-  "watchOS" : [
-    {
-      "hash" : "324d6a67b26f7f41f7e3977fe8c954b6ea436bad95aa3509466296ec3a6dd5e4",
-      "name" : "Bolts"
-    }
-  ],
-  "tvOS" : [
-    {
-      "hash" : "fa90ef75c4ab2e597ee8c551ca3bca207d08ea29c3390c04ca4cb16066ac4ad2",
-      "name" : "Bolts"
-    }
-  ],
-  "Mac" : [
-    {
-      "hash" : "f3a29beac6d459cf2973be20eae26bc2a70b73702b8c65674dd5529564948a16",
+      "hash" : "c3988697bd50662fbbfe048c6d3d976dd485eb2e16666008d6036d982cf8a6e5",
       "name" : "Bolts"
     }
   ]

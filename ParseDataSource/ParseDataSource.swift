@@ -13,9 +13,6 @@ import Parse
 
 open class ParseDataModel: PFObject, BaseDataModel {
   public static var sharedDataSource: DataSource = ParseDataSource()
-  open class var filters: [Filter] {
-    return []
-  }
   
   open var name: String? {
     get {
@@ -71,6 +68,12 @@ public class ParseDataSource: DataSource {
           for (condition, object) in conditionObject {
             if let condition = FetchQueryCondition(rawValue: condition) {
               switch condition {
+              case .exists:
+                if object as! Bool {
+                  query.whereKeyExists(key)
+                } else {
+                  query.whereKeyDoesNotExist(key)
+                }
               case .notEqualTo:
                 query.whereKey(key, notEqualTo: object)
               case .greaterThan:
@@ -92,7 +95,15 @@ public class ParseDataSource: DataSource {
                 query.whereKey(key, matchesRegex: object as! String, modifiers: modifiers)
               case .nearCoordinates:
                 let coordinates = object as! CLLocationCoordinate2D
-                query.whereKey(key, nearGeoPoint: PFGeoPoint(latitude: coordinates.latitude, longitude: coordinates.longitude), withinMiles: 1)
+                let distance = conditionObject[FetchQueryOption.distanceOption.rawValue] as? Double
+                query.whereKey(key, nearGeoPoint: PFGeoPoint(latitude: coordinates.latitude, longitude: coordinates.longitude), withinMiles: distance ?? 5)
+              case .withinGeoBox:
+                let geoBox = object as! GeoBox
+                query.whereKey(
+                  key,
+                  withinGeoBoxFromSouthwest: PFGeoPoint(latitude: geoBox.sw.latitude, longitude: geoBox.sw.longitude),
+                  toNortheast: PFGeoPoint(latitude: geoBox.ne.latitude, longitude: geoBox.ne.longitude)
+                )
               }
             }
           }
@@ -115,9 +126,7 @@ public class ParseDataSource: DataSource {
     return query
   }
   
-  open func fetch<T>(request: FetchRequest) -> Promise<[T]> {
-    let query = self.query(forRequest: request, ofObjectType: T.self as! ParseDataModel.Type)
-    
+  open func promise<T>(forQuery query: PFQuery<PFObject>) -> Promise<[T]> {
     return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
       query.findObjectsInBackground() { (results, error) in
         if let error = error {
@@ -128,6 +137,23 @@ public class ParseDataSource: DataSource {
       }
     }
   }
+  
+  open func fetch<T>(request: FetchRequest) -> Promise<[T]> {
+    let query = self.query(forRequest: request, ofObjectType: T.self as! ParseDataModel.Type)
+    
+    return promise(forQuery: query)
+  }
+
+  open func fetch<T, U>(request: FetchRequest, forParentObject parentObject: U) -> Promise<[T]> {
+    let query = self.query(forRequest: request, ofObjectType: T.self as! ParseDataModel.Type)
+    
+    if let parentObject = parentObject as? PFObject {
+      query.whereKey(parentObject.parseClassName.lowercased(), equalTo: parentObject)
+    }
+    
+    return promise(forQuery: query)
+  }
+
   
   open func getById<T>(id: String) -> Promise<T> {
     let query = self.query(ofObjectType: T.self as! ParseDataModel.Type)
@@ -146,6 +172,22 @@ public class ParseDataSource: DataSource {
   }
 
   open func save<T>(item: T) -> Promise<T> {
+    return Promise { fulfill, reject in
+      (item as! ParseDataModel).saveInBackground() { (success, error) in
+        if let error = error {
+          reject(error)
+        } else {
+          fulfill(item)
+        }
+      }
+    }
+  }
+  
+  open func save<T, U>(item: T, forParentObject parentObject: U) -> Promise<T> {
+    if let parseObject = item as? PFObject, let parentObject = parentObject as? PFObject {
+      parseObject[parentObject.parseClassName.lowercased()] = parentObject
+    }
+    
     return Promise { fulfill, reject in
       (item as! ParseDataModel).saveInBackground() { (success, error) in
         if let error = error {

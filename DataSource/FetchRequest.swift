@@ -30,15 +30,9 @@ public class FetchRequest {
     self.limit = limit
   }
   
-  // MARK: - Public Fetching Methods
-  
-  public func fetch<T>(filters: [Filter]? = nil) -> Promise<[T]> where T: BaseDataModel {
-    return T.sharedDataSource.fetch(request: self.apply(filters: filters))
-  }
-  
   
   // MARK: - Filtering
-  public func apply(filters: [Filter]? = nil) -> FetchRequest {
+  public func apply(filters: [Filter]?) -> FetchRequest {
     if let filters = filters {
       for filter in filters {
         filter.apply(to: self)
@@ -77,6 +71,18 @@ public class FetchRequest {
   
   
   // MARK: - Conditions
+  @discardableResult
+  public func whereKeyExists(_ key: String) -> FetchRequest {
+    self.fetchConditions.whereKeyExists(key)
+    return self
+  }
+
+  @discardableResult
+  public func whereKeyDoesNotExist(_ key: String) -> FetchRequest {
+    self.fetchConditions.whereKeyDoesNotExist(key)
+    return self
+  }
+  
   @discardableResult
   public func whereKey(_ key: String, equalTo object: Any) -> FetchRequest {
     self.fetchConditions.whereKey(key, equalTo: object)
@@ -132,14 +138,20 @@ public class FetchRequest {
   }
   
   @discardableResult
-  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: String? = nil) -> FetchRequest {
+  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: Any? = nil) -> FetchRequest {
     self.fetchConditions.whereKey(key, matchesRegex: regex, modifiers: modifiers)
     return self
   }
   
   @discardableResult
-  public func whereKey(_ key: String, nearCoordinates coordinates: CLLocationCoordinate2D) -> FetchRequest {
-    self.fetchConditions.whereKey(key, nearCoordinates: coordinates)
+  public func whereKey(_ key: String, nearCoordinates coordinates: CLLocationCoordinate2D, distance: Double? = nil) -> FetchRequest {
+    self.fetchConditions.whereKey(key, nearCoordinates: coordinates, distance: distance)
+    return self
+  }
+  
+  @discardableResult
+  public func whereKey(_ key: String, withinGeoBox geoBox: GeoBox) -> FetchRequest {
+    self.fetchConditions.whereKey(key, withinGeoBox: geoBox)
     return self
   }
 }

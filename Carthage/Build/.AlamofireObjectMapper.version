@@ -2,26 +2,7 @@
   "commitish" : "4.1.0",
   "iOS" : [
     {
-      "hash" : "5fa51a90ce316329514c4b6d859f051c93556f624a51f9c428bd84a73ab90e66",
-      "name" : "AlamofireObjectMapper"
-    }
-  ],
-  "xcodeVersion" : "Xcode 8.3.2\nBuild version 8E2002",
-  "watchOS" : [
-    {
-      "hash" : "f5fc9ea44f6ee17e64891505914cb774c6985c8a26116df0e9584e629b668049",
-      "name" : "AlamofireObjectMapper"
-    }
-  ],
-  "tvOS" : [
-    {
-      "hash" : "b33a765716fc6859cdac73ffd2f244e90ed2c140e6dbceec91e388ddcc179192",
-      "name" : "AlamofireObjectMapper"
-    }
-  ],
-  "Mac" : [
-    {
-      "hash" : "3d2b51e426ae76f5db714f3f85b2e977e4ccbce2435a7443744798865a8436cd",
+      "hash" : "4ddf0085cbe2c3bb98c2aeddb5c7b95ca0471976e8b7d8163a0531af0e145275",
       "name" : "AlamofireObjectMapper"
     }
   ]

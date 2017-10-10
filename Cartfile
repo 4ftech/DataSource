@@ -1,7 +1,7 @@
-github "mxcl/PromiseKit" ~> 4.0
+github "mxcl/PromiseKit" ~> 4.4
 
 github "ParsePlatform/Parse-SDK-iOS-OSX"
 
 
 github "tristanhimmelman/AlamofireObjectMapper" ~> 4.0
-github "ReactiveX/RxSwift" ~> 3.0
+github "ReactiveX/RxSwift" ~> 3.6.1

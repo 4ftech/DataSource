@@ -22,18 +22,26 @@ open class Filter: NSObject, NSCopying {
   public var key: String
   public var type: FilterType
   
+  public var isApplied: Bool { return false }
+  public var filterDescription: String? { return nil }
+  
   init(title: String, key: String, type: FilterType) {
     self.title = title
     self.key = key
     self.type = type
   }
   
-  func apply(to request: FetchRequest) {
+  public func clearFilter() {
+    assert(false, "You must override clearFilter in your Filter subclass")
+  }
+  
+  public func apply(to request: FetchRequest) {
     assert(false, "You must override apply in your Filter subclass")
   }
   
   public func copy(with zone: NSZone? = nil) -> Any {
     assert(false, "You must override copy in your Filter subclass")
+    return Filter(title: self.title, key: self.key, type: self.type)
   }
 }
 
@@ -42,11 +50,19 @@ open class Filter: NSObject, NSCopying {
 open class DateFilter: Filter {
   public var selectedDate: Date?
   
+  override public var isApplied: Bool {
+    return selectedDate != nil
+  }
+  
   init(title: String, key: String) {
     super.init(title: title, key: key, type: .date)
   }
   
-  override func apply(to request: FetchRequest) {
+  public override func clearFilter() {
+    selectedDate = nil
+  }
+  
+  public override func apply(to request: FetchRequest) {
     if let date = selectedDate {
       request.whereKey(key, equalTo: date)
     }
@@ -63,16 +79,20 @@ open class DateRangeFilter: Filter {
   public var startDate: Date?
   public var endDate: Date?
   
+  override public var isApplied: Bool {
+    return startDate != nil || endDate != nil
+  }
+  
   init(title: String, key: String) {
     super.init(title: title, key: key, type: .dateRange)
   }
   
-  func clearFilter() {
+  public override func clearFilter() {
     startDate = nil
     endDate = nil
   }
   
-  override func apply(to request: FetchRequest) {
+  public override func apply(to request: FetchRequest) {
     if let date = startDate {
       request.whereKey(key, greaterThanOrEqualTo: date)
     }
@@ -92,13 +112,21 @@ open class DateRangeFilter: Filter {
 
 
 //////////
-open class SelectFilter<T>: Filter where T: Equatable {
-  public var filterOptions: [SelectFilterOption<T>] = []
-  public var selectedValues: [SelectFilterOption<T>] = []
+open class SelectFilter: Filter {
+  public var filterOptions: [SelectFilterOption] = []
+  public var selectedValues: [SelectFilterOption] = []
   public var optionsLoaded = false
   public var selectType: SelectType = .one
   
-  init(title: String, key: String, selectType: SelectType, filterOptions: [SelectFilterOption<T>]? = nil) {
+  open override var isApplied: Bool {
+    return selectedValues.count > 0
+  }
+  
+  open override var filterDescription: String? {
+    return selectedValues.map { $0.name }.joined(separator: ", ")
+  }
+  
+  public init(title: String, key: String, selectType: SelectType, filterOptions: [SelectFilterOption]? = nil) {
     super.init(title: title, key: key, type: .select)
     
     self.selectType = selectType
@@ -109,7 +137,7 @@ open class SelectFilter<T>: Filter where T: Equatable {
     }
   }
   
-  override func apply(to request: FetchRequest) {
+  open override func apply(to request: FetchRequest) {
     switch selectType {
     case .one:
       if let selectedValue = selectedValues.first {
@@ -117,7 +145,7 @@ open class SelectFilter<T>: Filter where T: Equatable {
       }
     case .multiple:
       if selectedValues.count > 0 {
-        request.whereKey(key, containedIn: selectedValues)
+        request.whereKey(key, containedIn: selectedValues.map { $0.value })
       }
     }
   }
@@ -128,7 +156,7 @@ open class SelectFilter<T>: Filter where T: Equatable {
     return filter
   }
   
-  public func select(value: SelectFilterOption<T>) {
+  open func select(value: SelectFilterOption) {
     if filterOptions.contains(value) {
       switch selectType {
       case .one:
@@ -141,30 +169,30 @@ open class SelectFilter<T>: Filter where T: Equatable {
     }
   }
   
-  public func deselect(value: SelectFilterOption<T>) {
+  open func deselect(value: SelectFilterOption) {
     if let index = selectedValues.index(of: value) {
       selectedValues.remove(at: index)
     }
   }
   
-  public func clearFilter() {
+  open override func clearFilter() {
     selectedValues = []
   }
   
-  public func loadOptions() -> Promise<[SelectFilterOption<T>]> {
+  open func loadOptions() -> Promise<[SelectFilterOption]> {
     return Promise(value: filterOptions)
   }
 }
 
-open class SelectFilterOption<T>: NSObject where T:Equatable {
-  public var value: T!
+open class SelectFilterOption: NSObject {
+  public var value: Any!
   public var name: String!
   
   open override var description: String {
     return name
   }
   
-  init(value: T, name: String) {
+  public init(value: Any, name: String) {
     super.init()
     
     self.value = value
@@ -172,8 +200,14 @@ open class SelectFilterOption<T>: NSObject where T:Equatable {
   }
   
   open override func isEqual(_ object: Any?) -> Bool {
-    if let otherOption = object as? SelectFilterOption {
-      return self.value == otherOption.value
+    if let value = value as? String, let otherValue = (object as? SelectFilterOption)?.value as? String {
+      return value == otherValue
+    } else if let value = value as? Int, let otherValue = (object as? SelectFilterOption)?.value as? Int {
+      return value == otherValue
+    } else if let value = value as? NSObject, let otherValue = (object as? SelectFilterOption)?.value as? NSObject {
+      return value.isEqual(otherValue)
+    } else {
+      fatalError("Need to handle SelectFilterOption equality type")
     }
     
     return false
@@ -186,8 +220,8 @@ open class SelectFilterOption<T>: NSObject where T:Equatable {
 }
 
 //////////////////
-open class DataSourceSelectFilter<T>: SelectFilter<String> where T:BaseDataModel {
-  override public func loadOptions() -> Promise<[SelectFilterOption<String>]> {
+open class DataSourceSelectFilter<T>: SelectFilter where T:BaseDataModel {
+  override open func loadOptions() -> Promise<[SelectFilterOption]> {
     return T.getAll().then { (rows: [T]) in
       for row in rows {
         // Prefer value: objectId, name: name -- but this also sets both value and name

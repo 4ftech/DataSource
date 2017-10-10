@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Dictionary {
+public extension Dictionary {
   /// Merge and return a new dictionary
   func merge(with: Dictionary<Key,Value>) -> Dictionary<Key,Value> {
     var copy = self

@@ -9,12 +9,26 @@
 import Foundation
 import CoreLocation
 
+
+public class GeoBox: NSObject {
+  public var ne: CLLocationCoordinate2D!
+  public var sw: CLLocationCoordinate2D!
+  
+  public init(ne: CLLocationCoordinate2D, sw: CLLocationCoordinate2D) {
+    super.init()
+    
+    self.ne = ne
+    self.sw = sw
+  }
+}
+
+
 public enum FetchQueryCondition: String {
-  case notEqualTo, lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo, containedIn, notContainedIn, containsAll, regex, nearCoordinates
+  case exists, notEqualTo, lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo, containedIn, notContainedIn, containsAll, regex, nearCoordinates, withinGeoBox
 }
 
 public enum FetchQueryOption: String {
-  case regexOption
+  case regexOption, distanceOption
 }
 
 public class FetchConditions {
@@ -24,6 +38,14 @@ public class FetchConditions {
     
   }
   
+  public func whereKeyExists(_ key: String) {
+    self.whereKey(key, condition: .exists, object: true)
+  }
+
+  public func whereKeyDoesNotExist(_ key: String) {
+    self.whereKey(key, condition: .exists, object: false)
+  }
+
   public func whereKey(_ key: String, equalTo object: Any) {
     self.conditions[key] = object
   }
@@ -60,7 +82,7 @@ public class FetchConditions {
     self.whereKey(key, condition: .containsAll, object: object)
   }
   
-  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: String? = nil) {
+  public func whereKey(_ key: String, matchesRegex regex: String, modifiers: Any? = nil) {
     self.whereKey(key, condition: .regex, object: regex)
     
     if let modifiers = modifiers {
@@ -68,8 +90,16 @@ public class FetchConditions {
     }
   }
   
-  public func whereKey(_ key: String, nearCoordinates coordinates: CLLocationCoordinate2D) {
+  public func whereKey(_ key: String, nearCoordinates coordinates: CLLocationCoordinate2D, distance: Double? = nil) {
     self.whereKey(key, condition: .nearCoordinates, object: coordinates)
+    
+    if let distance = distance {
+      self.whereKey(key, option: .distanceOption, object: distance)
+    }
+  }
+  
+  public func whereKey(_ key: String, withinGeoBox geoBox: GeoBox) {
+    self.whereKey(key, condition: .withinGeoBox, object: geoBox)
   }
   
   // MARK: Internal
