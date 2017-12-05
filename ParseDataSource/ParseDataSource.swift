@@ -199,13 +199,13 @@ public class ParseDataSource: DataSource {
     }
   }
 
-  open func delete<T>(item: T) -> Promise<Bool> {
+  open func delete<T>(item: T) -> Promise<Void> {
     return Promise { fulfill, reject in
       (item as! ParseDataModel).deleteInBackground() { (success, error) in
         if let error = error {
           reject(error)
         } else {
-          fulfill(success)
+          fulfill()
         }
       }
     }

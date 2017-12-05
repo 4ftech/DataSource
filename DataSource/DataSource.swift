@@ -16,7 +16,7 @@ public protocol DataSource {
   func fetch<T, U>(request: FetchRequest, forParentObject: U) -> Promise<[T]>
   func save<T>(item: T) -> Promise<T>
   func save<T, U>(item: T, forParentObject: U) -> Promise<T>
-  func delete<T>(item: T) -> Promise<Bool>
+  func delete<T>(item: T) -> Promise<Void>
   func getById<T>(id: String) -> Promise<T>
 }
 
@@ -39,7 +39,7 @@ public protocol BaseDataModel: class, Hashable {
   
   func save<T:BaseDataModel>() -> Promise<T>
   func save<T:BaseDataModel, U:BaseDataModel>(forParentObject: U) -> Promise<T>
-  func delete() -> Promise<Bool>
+  func delete() -> Promise<Void>
   func fetch<T: BaseDataModel>() -> Promise<T>
 }
 
@@ -72,7 +72,7 @@ public extension BaseDataModel {
   }
   
   @discardableResult
-  public func delete() -> Promise<Bool> {
+  public func delete() -> Promise<Void> {
     return type(of: self).sharedDataSource.delete(item: self)
   }
   

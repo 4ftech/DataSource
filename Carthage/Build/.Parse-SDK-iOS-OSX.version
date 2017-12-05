@@ -2,8 +2,8 @@
   "commitish" : "1.15.3",
   "iOS" : [
     {
-      "hash" : "2525e05490fb4f3f618c1e5a62978943f4e54f1e2bdc98b5e94dade9458aa044",
-      "name" : "Parse"
+      "name" : "Parse",
+      "hash" : "32bec21618039b9dc401c897b825fe1a51219e8b694ebe8fae493772204c02b0"
     }
   ]
 }
