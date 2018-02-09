@@ -125,8 +125,12 @@ public protocol ObjectMapperDataSourceProtocol: DataSource {
   func saveMapped<T, U>(item: T, forParentObject parentObject: U?) -> Promise<T> where T:ObjectMapperDataModel, U:ObjectMapperDataModel
 }
 
-open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
-  open var baseURL: String { assert(false, "You must override baseURL in your ObjectMapperDataSource subclass") }
+open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
+  open var baseURL: String {
+    assert(false, "You must override baseURL in your ObjectMapperDataSource subclass")
+    return ""
+  }
+  
   open var limitKey: String { return "limit" }
   open var offsetKey: String { return "offset" }
   open var requireTrailingSlash: Bool { return false }
@@ -241,6 +245,23 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     default:
       return URLEncoding.default
     }
+  }
+  
+  public func retry<T>(times: Int, cooldown: TimeInterval, body: @escaping () -> Promise<T>) -> Promise<T> {
+    var retryCounter = 0
+    func attempt() -> Promise<T> {
+      return body().recover(policy: CatchPolicy.allErrorsExceptCancellation) { error -> Promise<T> in
+        retryCounter += 1
+        
+        guard retryCounter <= times else {
+          throw error
+        }
+        
+        return after(seconds: cooldown).then(execute: attempt)
+      }
+    }
+    
+    return attempt()
   }
   
   // MARK: - Generating requests
@@ -449,7 +470,7 @@ open class EmptyObjectMapperDataSource: ObjectMapperDataSourceProtocol {
 }
 
 
-open class ObjectMapperDataSource: EmptyObjectMapperDataSource {
+open class ObjectMapperDataSource: BaseObjectMapperDataSource {
   open override func fetch<T>(request: FetchRequest) -> Promise<[T]> where T:ObjectMapperDataModel {
     return fetchArray(path: T.urlPathForList, fetchRequest: request)
   }
