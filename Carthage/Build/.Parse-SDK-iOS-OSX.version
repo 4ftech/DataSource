@@ -1,9 +1,25 @@
 {
-  "commitish" : "1.15.3",
+  "commitish" : "1.17.1",
   "iOS" : [
     {
+      "name" : "ParseFacebookUtilsV4",
+      "hash" : "e7724aed48be2c3c09639df6e13d99a13a29a7d5f8a0de6e2b9937764b021f83"
+    },
+    {
+      "name" : "ParseTwitterUtils",
+      "hash" : "9481dcd910887598844221272bb573311cf40d0a9c21464e59550856a3e2f784"
+    },
+    {
+      "name" : "ParseUI",
+      "hash" : "cc2fa662bb5beb6a8fda681e097dadcb25b1077550f5f82fd33d53c9c596f7b2"
+    },
+    {
       "name" : "Parse",
-      "hash" : "32bec21618039b9dc401c897b825fe1a51219e8b694ebe8fae493772204c02b0"
+      "hash" : "0f986772da82a14ef6ccb86fedf2c92bad72eec02fd1ee236d24700e75e83f3c"
+    },
+    {
+      "name" : "Parse",
+      "hash" : "0f986772da82a14ef6ccb86fedf2c92bad72eec02fd1ee236d24700e75e83f3c"
     }
   ]
 }
