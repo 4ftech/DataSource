@@ -336,7 +336,7 @@
 					705D2DA21E5E4064005D3A5F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = M68244X38L;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					705D2DD11E5F6CA6005D3A5F = {
@@ -591,7 +591,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -615,7 +615,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

@@ -15,7 +15,7 @@ import ObjectMapper
 import AlamofireObjectMapper
 
 open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
-  open static var _sharedDataSource: ObjectMapperDataSource!
+  public static var _sharedDataSource: ObjectMapperDataSource!
   open class var sharedDataSource: DataSource {
     return _sharedDataSource
   }
@@ -66,11 +66,11 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
     }
   }
   
-  open override var hashValue: Int {
+  open override var hash: Int {
     if let objectId = self.objectId {
-      return objectId.hashValue ^ type(of: self).urlPath.hashValue
+      return objectId.hash ^ type(of: self).urlPath.hash
     } else {
-      return super.hashValue
+      return super.hash
     }
   }
   
