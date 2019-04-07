@@ -164,9 +164,7 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     // Combine headers
     var allHeaders: HTTPHeaders = defaultHeaders ?? [:]
     if let headers = headers {
-      for header in headers {
-        allHeaders.add(header)
-      }
+      allHeaders.append(with: headers)
     }
     
     let encoding = encoding ?? defaultEncoding(forMethod: method)
@@ -175,7 +173,7 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     NSLog("allParameters: \(allParameters)")
     NSLog("allHeaders: \(allHeaders)")
     
-    return AF.request(
+    return Alamofire.request(
       fullURL(forPath: path),
       method: method,
       parameters: allParameters,
