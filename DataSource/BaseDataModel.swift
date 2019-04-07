@@ -35,48 +35,48 @@ public protocol BaseDataModel: Hashable {
 }
 
 public extension BaseDataModel {
-  public var isNew: Bool {
+  var isNew: Bool {
     return objectId == nil
   }
 
-  public static func fetchRequest(sortDescriptor: NSSortDescriptor? = nil, offset: Int? = nil, limit: Int? = nil) -> FetchRequest {
+  static func fetchRequest(sortDescriptor: NSSortDescriptor? = nil, offset: Int? = nil, limit: Int? = nil) -> FetchRequest {
     return FetchRequest(sortDescriptor: sortDescriptor, offset: offset, limit: limit)
   }
 
   @discardableResult
-  public static func getById<T:BaseDataModel>(id: String) -> Promise<T> {
+  static func getById<T:BaseDataModel>(id: String) -> Promise<T> {
     return sharedDataSource.getById(id: id)
   }
 
-  public static func getAll<T:BaseDataModel>(filters: [Filter]? = nil) -> Promise<[T]> {
+  static func getAll<T:BaseDataModel>(filters: [Filter]? = nil) -> Promise<[T]> {
     return sharedDataSource.fetch(request: fetchRequest().apply(filters: filters))
   }
 
   @discardableResult
-  public func save<T:BaseDataModel>() -> Promise<T> {
+  func save<T:BaseDataModel>() -> Promise<T> {
     return type(of: self).sharedDataSource.save(item: self as! T)
   }
 
   @discardableResult
-  public func save<T:BaseDataModel, U:BaseDataModel>(forParentObject parentObject: U) -> Promise<T> {
+  func save<T:BaseDataModel, U:BaseDataModel>(forParentObject parentObject: U) -> Promise<T> {
     return type(of: self).sharedDataSource.save(item: self as! T, forParentObject: parentObject)
   }
 
   @discardableResult
-  public func delete() -> Promise<Void> {
+  func delete() -> Promise<Void> {
     return type(of: self).sharedDataSource.delete(item: self)
   }
 
   @discardableResult
-  public func fetch<T:BaseDataModel>() -> Promise<T> {
+  func fetch<T:BaseDataModel>() -> Promise<T> {
     if let id = self.objectId {
       return type(of: self).sharedDataSource.getById(id: id)
-    } else {
-      return Promise(value: self as! T)
+    } else {      
+      return Promise.value(self as! T)
     }
   }
 
-  public var hashValue: Int {
+  var hashValue: Int {
     return objectId?.hashValue ?? name?.hashValue ?? 0
   }
 

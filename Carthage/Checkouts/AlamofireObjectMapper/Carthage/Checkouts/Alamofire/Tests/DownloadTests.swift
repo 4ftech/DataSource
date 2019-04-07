@@ -29,32 +29,42 @@ import XCTest
 class DownloadInitializationTestCase: BaseTestCase {
     func testDownloadClassMethodWithMethodURLAndDestination() {
         // Given
-        let urlString = "https://httpbin.org/"
+        let urlString = "https://httpbin.org/get"
+        let expectation = self.expectation(description: "download should complete")
 
         // When
-        let request = Alamofire.download(urlString)
+        let request = AF.download(urlString).response { (resp) in
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(request.request)
         XCTAssertEqual(request.request?.httpMethod, "GET")
         XCTAssertEqual(request.request?.url?.absoluteString, urlString)
-        XCTAssertNil(request.response)
+        XCTAssertNotNil(request.response)
     }
 
     func testDownloadClassMethodWithMethodURLHeadersAndDestination() {
         // Given
-        let urlString = "https://httpbin.org/"
-        let headers = ["Authorization": "123456"]
+        let urlString = "https://httpbin.org/get"
+        let headers: HTTPHeaders = ["Authorization": "123456"]
+        let expectation = self.expectation(description: "download should complete")
 
         // When
-        let request = Alamofire.download(urlString, headers: headers)
+        let request = AF.download(urlString, headers: headers).response { (resp) in
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
 
         // Then
         XCTAssertNotNil(request.request)
         XCTAssertEqual(request.request?.httpMethod, "GET")
         XCTAssertEqual(request.request?.url?.absoluteString, urlString)
         XCTAssertEqual(request.request?.value(forHTTPHeaderField: "Authorization"), "123456")
-        XCTAssertNil(request.response)
+        XCTAssertNotNil(request.response)
     }
 }
 
@@ -68,15 +78,15 @@ class DownloadResponseTestCase: BaseTestCase {
     func testDownloadRequest() {
         // Given
         let fileURL = randomCachesFileURL
-        let numberOfLines = 100
+        let numberOfLines = 10
         let urlString = "https://httpbin.org/stream/\(numberOfLines)"
-        let destination: DownloadRequest.DownloadFileDestination = { _, _ in (fileURL, []) }
+        let destination: DownloadRequest.Destination = { _, _ in (fileURL, []) }
 
         let expectation = self.expectation(description: "Download request should download data to file: \(urlString)")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download(urlString, to: destination)
+        AF.download(urlString, to: destination)
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -87,11 +97,11 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
 
-        if let destinationURL = response?.destinationURL {
+        if let destinationURL = response?.fileURL {
             XCTAssertTrue(FileManager.default.fileExists(atPath: destinationURL.path))
 
             if let data = try? Data(contentsOf: destinationURL) {
@@ -105,15 +115,15 @@ class DownloadResponseTestCase: BaseTestCase {
     func testCancelledDownloadRequest() {
         // Given
         let fileURL = randomCachesFileURL
-        let numberOfLines = 100
+        let numberOfLines = 10
         let urlString = "https://httpbin.org/stream/\(numberOfLines)"
-        let destination: DownloadRequest.DownloadFileDestination = { _, _ in (fileURL, []) }
+        let destination: DownloadRequest.Destination = { _, _ in (fileURL, []) }
 
         let expectation = self.expectation(description: "Cancelled download request should not download data to file")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download(urlString, to: destination)
+        AF.download(urlString, to: destination)
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -123,25 +133,23 @@ class DownloadResponseTestCase: BaseTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
 
         // Then
-        XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.destinationURL)
-        XCTAssertNil(response?.resumeData)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNotNil(response?.error)
     }
 
     func testDownloadRequestWithProgress() {
         // Given
-        let randomBytes = 4 * 1024 * 1024
+        let randomBytes = 1 * 1024 * 1024
         let urlString = "https://httpbin.org/bytes/\(randomBytes)"
 
         let expectation = self.expectation(description: "Bytes download progress should be reported: \(urlString)")
 
         var progressValues: [Double] = []
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download(urlString)
+        AF.download(urlString)
             .downloadProgress { progress in
                 progressValues.append(progress.fractionCompleted)
             }
@@ -155,8 +163,7 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
 
@@ -176,14 +183,16 @@ class DownloadResponseTestCase: BaseTestCase {
 
     func testDownloadRequestWithParameters() {
         // Given
+        let fileURL = randomCachesFileURL
         let urlString = "https://httpbin.org/get"
         let parameters = ["foo": "bar"]
+        let destination: DownloadRequest.Destination = { _, _ in (fileURL, []) }
 
         let expectation = self.expectation(description: "Download request should download data to file")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download(urlString, parameters: parameters)
+        AF.download(urlString, parameters: parameters, to: destination)
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -194,15 +203,13 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
-
+        // TODO: Fails since the file is deleted by the time we get here?
         if
-            let temporaryURL = response?.temporaryURL,
-            let data = try? Data(contentsOf: temporaryURL),
-            let jsonObject = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0)),
+            let data = try? Data(contentsOf: fileURL),
+            let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
             let json = jsonObject as? [String: Any],
             let args = json["args"] as? [String: String]
         {
@@ -216,14 +223,14 @@ class DownloadResponseTestCase: BaseTestCase {
         // Given
         let fileURL = randomCachesFileURL
         let urlString = "https://httpbin.org/get"
-        let headers = ["Authorization": "123456"]
-        let destination: DownloadRequest.DownloadFileDestination = { _, _ in (fileURL, []) }
+        let headers: HTTPHeaders = ["Authorization": "123456"]
+        let destination: DownloadRequest.Destination = { _, _ in (fileURL, []) }
 
         let expectation = self.expectation(description: "Download request should download data to file: \(fileURL)")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download(urlString, headers: headers, to: destination)
+        AF.download(urlString, headers: headers, to: destination)
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -234,7 +241,7 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
 
@@ -255,10 +262,10 @@ class DownloadResponseTestCase: BaseTestCase {
         let fileURL = testDirectoryURL.appendingPathComponent("some/random/folder/test_output.json")
 
         let expectation = self.expectation(description: "Download request should download data but fail to move file")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download("https://httpbin.org/get", to: { _, _ in (fileURL, [])})
+        AF.download("https://httpbin.org/get", to: { _, _ in (fileURL, [])})
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -269,8 +276,7 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNotNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
 
@@ -286,10 +292,10 @@ class DownloadResponseTestCase: BaseTestCase {
         let fileURL = testDirectoryURL.appendingPathComponent("some/random/folder/test_output.json")
 
         let expectation = self.expectation(description: "Download request should download data to file: \(fileURL)")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download("https://httpbin.org/get", to: { _, _ in (fileURL, [.createIntermediateDirectories])})
+        AF.download("https://httpbin.org/get", to: { _, _ in (fileURL, [.createIntermediateDirectories])})
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -300,8 +306,7 @@ class DownloadResponseTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNotNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
     }
@@ -316,10 +321,10 @@ class DownloadResponseTestCase: BaseTestCase {
             try "random_data".write(to: fileURL, atomically: true, encoding: .utf8)
 
             let expectation = self.expectation(description: "Download should complete but fail to move file")
-            var response: DefaultDownloadResponse?
+            var response: DownloadResponse<URL?>?
 
             // When
-            Alamofire.download("https://httpbin.org/get", to: { _, _ in (fileURL, [])})
+            AF.download("https://httpbin.org/get", to: { _, _ in (fileURL, [])})
                 .response { resp in
                     response = resp
                     expectation.fulfill()
@@ -332,8 +337,7 @@ class DownloadResponseTestCase: BaseTestCase {
 
             XCTAssertNotNil(response?.request)
             XCTAssertNotNil(response?.response)
-            XCTAssertNotNil(response?.temporaryURL)
-            XCTAssertNotNil(response?.destinationURL)
+            XCTAssertNil(response?.fileURL)
             XCTAssertNil(response?.resumeData)
             XCTAssertNotNil(response?.error)
 
@@ -355,10 +359,10 @@ class DownloadResponseTestCase: BaseTestCase {
         let fileURL = directoryURL.appendingPathComponent("test_output.json")
 
         let expectation = self.expectation(description: "Download should complete and move file to URL: \(fileURL)")
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        Alamofire.download("https://httpbin.org/get", to: { _, _ in (fileURL, [.removePreviousFile])})
+        AF.download("https://httpbin.org/get", to: { _, _ in (fileURL, [.removePreviousFile, .createIntermediateDirectories])})
             .response { resp in
                 response = resp
                 expectation.fulfill()
@@ -371,8 +375,7 @@ class DownloadResponseTestCase: BaseTestCase {
 
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNotNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
     }
@@ -383,41 +386,15 @@ class DownloadResponseTestCase: BaseTestCase {
 class DownloadResumeDataTestCase: BaseTestCase {
     let urlString = "https://upload.wikimedia.org/wikipedia/commons/6/69/NASA-HS201427a-HubbleUltraDeepField2014-20140603.jpg"
 
-    func testThatImmediatelyCancelledDownloadDoesNotHaveResumeDataAvailable() {
-        // Given
-        let expectation = self.expectation(description: "Download should be cancelled")
-        var response: DefaultDownloadResponse?
-
-        // When
-        let download = Alamofire.download(urlString)
-            .response { resp in
-                response = resp
-                expectation.fulfill()
-            }
-
-        download.cancel()
-
-        waitForExpectations(timeout: timeout, handler: nil)
-
-        // Then
-        XCTAssertNotNil(response?.request)
-        XCTAssertNil(response?.response)
-        XCTAssertNil(response?.destinationURL)
-        XCTAssertNil(response?.resumeData)
-        XCTAssertNotNil(response?.error)
-
-        XCTAssertNil(download.resumeData)
-    }
-
     func testThatCancelledDownloadResponseDataMatchesResumeData() {
         // Given
         let expectation = self.expectation(description: "Download should be cancelled")
         var cancelled = false
 
-        var response: DefaultDownloadResponse?
+        var response: DownloadResponse<URL?>?
 
         // When
-        let download = Alamofire.download(urlString)
+        let download = AF.download(urlString)
         download.downloadProgress { progress in
             guard !cancelled else { return }
 
@@ -436,7 +413,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNotNil(response?.error)
 
         XCTAssertNotNil(response?.resumeData)
@@ -453,7 +430,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
         var response: DownloadResponse<Any>?
 
         // When
-        let download = Alamofire.download(urlString)
+        let download = AF.download(urlString)
         download.downloadProgress { progress in
             guard !cancelled else { return }
 
@@ -472,7 +449,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertEqual(response?.result.isFailure, true)
         XCTAssertNotNil(response?.result.error)
 
@@ -490,7 +467,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
         var response1: DownloadResponse<Data>?
 
         // When
-        let download = Alamofire.download(urlString)
+        let download = AF.download(urlString)
         download.downloadProgress { progress in
             guard !cancelled else { return }
 
@@ -515,8 +492,10 @@ class DownloadResumeDataTestCase: BaseTestCase {
 
         var progressValues: [Double] = []
         var response2: DownloadResponse<Data>?
-
-        Alamofire.download(resumingWith: resumeData)
+        let destination = DownloadRequest.suggestedDownloadDestination(options: [.removePreviousFile, .createIntermediateDirectories])
+        // TODO: Added destination because temp file was being deleted very quickly.
+        AF.download(resumingWith: resumeData,
+                           to: destination)
             .downloadProgress { progress in
                 progressValues.append(progress.fractionCompleted)
             }
@@ -530,13 +509,12 @@ class DownloadResumeDataTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response1?.request)
         XCTAssertNotNil(response1?.response)
-        XCTAssertNil(response1?.destinationURL)
+        XCTAssertNil(response1?.fileURL)
         XCTAssertEqual(response1?.result.isFailure, true)
         XCTAssertNotNil(response1?.result.error)
 
         XCTAssertNotNil(response2?.response)
-        XCTAssertNotNil(response2?.temporaryURL)
-        XCTAssertNil(response2?.destinationURL)
+        XCTAssertNotNil(response2?.fileURL)
         XCTAssertEqual(response2?.result.isSuccess, true)
         XCTAssertNil(response2?.result.error)
 
@@ -555,7 +533,7 @@ class DownloadResponseMapTestCase: BaseTestCase {
         var response: DownloadResponse<String>?
 
         // When
-        Alamofire.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
+        AF.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
             response = resp.map { json in
                 // json["args"]["foo"] is "bar": use this invariant to test the map function
                 return ((json as? [String: Any])?["args"] as? [String: Any])?["foo"] as? String ?? "invalid"
@@ -569,15 +547,11 @@ class DownloadResponseMapTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
         XCTAssertEqual(response?.result.value, "bar")
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatMapPreservesFailureError() {
@@ -588,7 +562,7 @@ class DownloadResponseMapTestCase: BaseTestCase {
         var response: DownloadResponse<String>?
 
         // When
-        Alamofire.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
+        AF.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
             response = resp.map { _ in "ignored" }
             expectation.fulfill()
         }
@@ -598,15 +572,11 @@ class DownloadResponseMapTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
         XCTAssertEqual(response?.result.isFailure, true)
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 }
 
@@ -621,7 +591,7 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         var response: DownloadResponse<String>?
 
         // When
-        Alamofire.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
+        AF.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
             response = resp.flatMap { json in
                 // json["args"]["foo"] is "bar": use this invariant to test the map function
                 return ((json as? [String: Any])?["args"] as? [String: Any])?["foo"] as? String ?? "invalid"
@@ -635,15 +605,11 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
         XCTAssertEqual(response?.result.value, "bar")
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatFlatMapCatchesTransformationError() {
@@ -656,7 +622,7 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         var response: DownloadResponse<String>?
 
         // When
-        Alamofire.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
+        AF.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
             response = resp.flatMap { json in
                 throw TransformError()
             }
@@ -669,8 +635,7 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         if let error = response?.result.error {
             XCTAssertTrue(error is TransformError)
@@ -678,9 +643,7 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
             XCTFail("flatMap should catch the transformation error")
         }
 
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatFlatMapPreservesFailureError() {
@@ -691,7 +654,7 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         var response: DownloadResponse<String>?
 
         // When
-        Alamofire.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
+        AF.download(urlString, parameters: ["foo": "bar"]).responseJSON { resp in
             response = resp.flatMap { _ in "ignored" }
             expectation.fulfill()
         }
@@ -701,15 +664,11 @@ class DownloadResponseFlatMapTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
         XCTAssertEqual(response?.result.isFailure, true)
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 }
 
@@ -722,7 +681,7 @@ class DownloadResponseMapErrorTestCase: BaseTestCase {
         var response: DownloadResponse<Any>?
 
         // When
-        Alamofire.download(urlString).responseJSON { resp in
+        AF.download(urlString).responseJSON { resp in
             response = resp.mapError { error in
                 return TestError.error(error: error)
             }
@@ -735,16 +694,14 @@ class DownloadResponseMapErrorTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
         XCTAssertEqual(response?.result.isFailure, true)
+
         guard let error = response?.error as? TestError, case .error = error else { XCTFail(); return }
 
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatMapErrorPreservesSuccessValue() {
@@ -755,7 +712,7 @@ class DownloadResponseMapErrorTestCase: BaseTestCase {
         var response: DownloadResponse<Data>?
 
         // When
-        Alamofire.download(urlString).responseData { resp in
+        AF.download(urlString).responseData { resp in
             response = resp.mapError { TestError.error(error: $0) }
             expectation.fulfill()
         }
@@ -765,14 +722,10 @@ class DownloadResponseMapErrorTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertEqual(response?.result.isSuccess, true)
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 }
 
@@ -787,7 +740,7 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         var response: DownloadResponse<Data>?
 
         // When
-        Alamofire.download(urlString).responseData { resp in
+        AF.download(urlString).responseData { resp in
             response = resp.flatMapError { TestError.error(error: $0) }
             expectation.fulfill()
         }
@@ -797,15 +750,11 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNotNil(response?.response)
-        XCTAssertNotNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNotNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNil(response?.error)
         XCTAssertEqual(response?.result.isSuccess, true)
-
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatFlatMapErrorCatchesTransformationError() {
@@ -816,7 +765,7 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         var response: DownloadResponse<Data>?
 
         // When
-        Alamofire.download(urlString).responseData { resp in
+        AF.download(urlString).responseData { resp in
             response = resp.flatMapError { _ in try TransformationError.error.alwaysFails() }
             expectation.fulfill()
         }
@@ -826,8 +775,7 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
         XCTAssertEqual(response?.result.isFailure, true)
@@ -838,9 +786,7 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
             XCTFail("flatMapError should catch the transformation error")
         }
 
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 
     func testThatFlatMapErrorTransformsError() {
@@ -851,7 +797,7 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         var response: DownloadResponse<Data>?
 
         // When
-        Alamofire.download(urlString).responseData { resp in
+        AF.download(urlString).responseData { resp in
             response = resp.flatMapError { TestError.error(error: $0) }
             expectation.fulfill()
         }
@@ -861,15 +807,12 @@ class DownloadResponseFlatMapErrorTestCase: BaseTestCase {
         // Then
         XCTAssertNotNil(response?.request)
         XCTAssertNil(response?.response)
-        XCTAssertNil(response?.temporaryURL)
-        XCTAssertNil(response?.destinationURL)
+        XCTAssertNil(response?.fileURL)
         XCTAssertNil(response?.resumeData)
         XCTAssertNotNil(response?.error)
         XCTAssertEqual(response?.result.isFailure, true)
         guard let error = response?.error as? TestError, case .error = error else { XCTFail(); return }
 
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            XCTAssertNotNil(response?.metrics)
-        }
+        XCTAssertNotNil(response?.metrics)
     }
 }

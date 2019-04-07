@@ -180,7 +180,7 @@ open class SelectFilter: Filter {
   }
   
   open func loadOptions() -> Promise<[SelectFilterOption]> {
-    return Promise(value: filterOptions)
+    return Promise.value(filterOptions)
   }
 }
 
@@ -209,8 +209,6 @@ open class SelectFilterOption: NSObject {
     } else {
       fatalError("Need to handle SelectFilterOption equality type")
     }
-    
-    return false
   }
   
   static func == (lhs: SelectFilterOption, rhs: SelectFilterOption) -> Bool {
@@ -222,23 +220,21 @@ open class SelectFilterOption: NSObject {
 //////////////////
 open class DataSourceSelectFilter<T>: SelectFilter where T:BaseDataModel {
   override open func loadOptions() -> Promise<[SelectFilterOption]> {
-    return T.getAll().then { (rows: [T]) in
+    return T.getAll().then { (rows: [T]) -> Promise<[SelectFilterOption]> in
       for row in rows {
         // Prefer value: objectId, name: name -- but this also sets both value and name
         // of the option to objectId or name if only 1 exists
         let value = row.objectId ?? row.name
         let name = row.name ?? row.objectId
-        
+
         if let value = value, let name = name {
           self.filterOptions.append(SelectFilterOption(value: value, name: name))
         }
       }
 
       self.optionsLoaded = true
-      
-      return Promise(value: self.filterOptions)
-    }.catch { error in
-      NSLog("Filter.loadOptions: \(error)")
+
+      return Promise.value(self.filterOptions)
     }
   }
 }

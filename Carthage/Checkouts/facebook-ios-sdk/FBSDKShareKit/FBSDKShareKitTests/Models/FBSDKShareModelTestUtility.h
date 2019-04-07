@@ -36,14 +36,14 @@
 #import <FBSDKShareKit/FBSDKShareVideo.h>
 #import <FBSDKShareKit/FBSDKShareVideoContent.h>
 
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphBoolValueKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphDoubleValueKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphFloatValueKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphIntegerValueKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphNumberArrayKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphPhotoArrayKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphStringArrayKey;
-extern NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphBoolValueKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphDoubleValueKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphFloatValueKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphIntegerValueKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphNumberArrayKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphPhotoArrayKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphStringArrayKey;
+FOUNDATION_EXPORT NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey;
 
 @interface FBSDKShareModelTestUtility : NSObject
 
@@ -74,6 +74,7 @@ extern NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey;
 + (NSString *)openGraphString;
 + (NSArray *)peopleIDs;
 + (FBSDKSharePhotoContent *)photoContent;
++ (FBSDKSharePhotoContent *)photoContentWithFileURLs;
 + (FBSDKSharePhotoContent *)photoContentWithImages;
 + (UIImage *)photoImage;
 + (NSURL *)photoImageURL;

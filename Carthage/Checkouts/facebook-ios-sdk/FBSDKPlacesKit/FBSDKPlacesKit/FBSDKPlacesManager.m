@@ -110,7 +110,7 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
 }
 
 - (void)generateCurrentPlaceRequestWithMinimumConfidenceLevel:(FBSDKPlaceLocationConfidence)minimumConfidence
-                                                       fields:(NSArray *)fields
+                                                       fields:(NSArray<NSString *> *)fields
                                                    completion:(FBSDKCurrentPlaceGraphRequestCompletion)completion
 {
 
@@ -127,6 +127,7 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
     locationError = error;
     dispatch_group_leave(locationAndBeaconsGroup);
   }];
+
   [self.locationManager requestLocation];
 
   dispatch_group_enter(locationAndBeaconsGroup);
@@ -143,6 +144,16 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
       completion([self _currentPlaceGraphRequestForLocation:currentLocation bluetoothBeacons:currentBeacons minimumConfidenceLevel:minimumConfidence fields:fields], nil);
     }
   });
+}
+
+- (void)generateCurrentPlaceRequestForCurrentLocation:(CLLocation *)currentLocation
+                           withMinimumConfidenceLevel:(FBSDKPlaceLocationConfidence)minimumConfidence
+                                               fields:(nullable NSArray<NSString *> *)fields
+                                           completion:(nonnull FBSDKCurrentPlaceGraphRequestCompletion)completion
+{
+  [self.bluetoothScanner scanForBeaconsWithCompletion:^(NSArray<FBSDKBluetoothBeacon *> * _Nullable beacons) {
+    completion([self _currentPlaceGraphRequestForLocation:currentLocation bluetoothBeacons:beacons minimumConfidenceLevel:minimumConfidence fields:fields], nil);
+  }];
 }
 
 
@@ -297,7 +308,7 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-  CLLocation *mostRecentLocation = [locations lastObject];
+  CLLocation *mostRecentLocation = locations.lastObject;
   [self _callCompletionBlocksWithLocation:mostRecentLocation error:nil];
 }
 

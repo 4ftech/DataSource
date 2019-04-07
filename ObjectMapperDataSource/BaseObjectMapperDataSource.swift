@@ -146,7 +146,7 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
           throw error
         }
         
-        return after(seconds: cooldown).then(execute: attempt)
+        return after(seconds: cooldown).then(attempt)
       }
     }
     
@@ -164,7 +164,9 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     // Combine headers
     var allHeaders: HTTPHeaders = defaultHeaders ?? [:]
     if let headers = headers {
-      allHeaders.append(with: headers)
+      for header in headers {
+        allHeaders.add(header)
+      }
     }
     
     let encoding = encoding ?? defaultEncoding(forMethod: method)
@@ -173,7 +175,7 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     NSLog("allParameters: \(allParameters)")
     NSLog("allHeaders: \(allHeaders)")
     
-    return Alamofire.request(
+    return AF.request(
       fullURL(forPath: path),
       method: method,
       parameters: allParameters,
@@ -185,22 +187,22 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   open func dataRequestPromise(forURLPath path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
     
     // Returns a promise, to make it easier for a subclass of this to fetch OAuth headers first
-    return Promise<DataRequest>(value: alamofireRequest(forURLPath: path, method: method, encoding: encoding, parameters: parameters, headers: headers))
+    return Promise<DataRequest>.value(alamofireRequest(forURLPath: path, method: method, encoding: encoding, parameters: parameters, headers: headers))
   }
   
   open func objectRequestPromise<T>(forURLPath path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.objectKeyPath) -> Promise<T> where T:ObjectMapperDataModel {
     
     return dataRequestPromise(forURLPath: path, method: method, encoding: encoding, parameters: parameters, headers: headers).then { request in
-      return Promise<T> { (fulfill, reject) in
+      return Promise<T> { seal in
         request.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
           switch response.result {
           case .success(let value):
-            fulfill(value)
+            seal.fulfill(value)
           case .failure(let error):
             if let error = self.error(fromResponse: response) {
-              reject(error)
+              seal.reject(error)
             } else {
-              reject(error)
+              seal.reject(error)
             }
           }
         }
@@ -211,7 +213,7 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   open func arrayRequestPromise<T>(forURLPath path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.listKeyPath) -> Promise<[T]> where T:ObjectMapperDataModel {
     
     return dataRequestPromise(forURLPath: path, method: method, encoding: encoding, parameters: parameters, headers: headers).then { request in
-      return Promise<[T]> { (fulfill, reject) in
+      return Promise<[T]> { seal in
         request
           //          .responseJSON { response in
           //            switch response.result {
@@ -225,12 +227,12 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
           .responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
             switch response.result {
             case .success(let value):
-              fulfill(value)
+              seal.fulfill(value)
             case .failure(let error):
               if let error = self.error(fromResponse: response) {
-                reject(error)
+                seal.reject(error)
               } else {
-                reject(error)
+                seal.reject(error)
               }
             }
         }
@@ -266,10 +268,10 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
       path = "\(parentObject.pathForObject)\(path)"
     }
     
-    return Promise<[String:Any]>() { fulfill, reject in
+    return Promise<[String:Any]>() { seal in
       // To create JSON in background
       DispatchQueue.global(qos: .background).async {
-        fulfill(item.toJSON())
+        seal.fulfill(item.toJSON())
       }
       }.then { (json: [String:Any]) -> Promise<DataRequest> in
         return self.dataRequestPromise(forURLPath: path, method: method, encoding: encoding, parameters: json)
@@ -278,16 +280,16 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   
   open func saveMapped<T, U>(item: T, forParentObject parentObject: U? = nil) -> Promise<T> where T:ObjectMapperDataModel, U:ObjectMapperDataModel {
     return self.dataRequestPromiseToSave(item: item, forParentObject: parentObject).then { request in
-      return Promise<T> { fulfill, reject in
+      return Promise<T> { seal in
         request.responseObject { (response: DataResponse<T>) in
           switch response.result {
           case .success(let value):
-            fulfill(value)
+            seal.fulfill(value)
           case .failure(let error):
             if let error = self.error(fromResponse: response) {
-              reject(error)
+              seal.reject(error)
             } else {
-              reject(error)
+              seal.reject(error)
             }
           }
         }
@@ -306,16 +308,16 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     // Only try to delete if have an ID
     if let _ = item.objectId {
       return dataRequestPromise(forURLPath: item.pathForObject, method: deleteMethod, encoding: deleteEncoding).then { request in
-        return Promise<Void> { fulfill, reject in
+        return Promise<Void> { seal in
           request.responseJSON { response in
             switch response.result {
             case .success:
-              fulfill(())
+              seal.fulfill(())
             case .failure(let error):
               if let error = self.error(fromResponse: response) {
-                reject(error)
+                seal.reject(error)
               } else {
-                reject(error)
+                seal.reject(error)
               }
             }
           }
@@ -329,23 +331,23 @@ open class BaseObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   
   
   public func fetch<T>(request: FetchRequest) -> Promise<[T]> {
-    return Promise<[T]> { _,_ in }
+    return Promise<[T]> { seal in }
   }
   
   public func fetch<T, U>(request: FetchRequest, forParentObject parentObject: U) -> Promise<[T]> {
-    return Promise<[T]> { _,_ in }
+    return Promise<[T]> { seal in }
   }
   
   public func getById<T>(id: String) -> Promise<T> {
-    return Promise<T> { _,_ in }
+    return Promise<T> { seal in }
   }
   
   public func save<T>(item: T) -> Promise<T> {
-    return Promise<T> { _,_ in }
+    return Promise<T> { seal in }
   }
   
   public func save<T, U>(item: T, forParentObject parentObject: U) -> Promise<T> {
-    return Promise<T> { _,_ in }
+    return Promise<T> { seal in }
   }
   
   // MARK: - Errors

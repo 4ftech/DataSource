@@ -34,13 +34,13 @@
 {
   FBSDKShareOpenGraphAction *action = [FBSDKShareModelTestUtility openGraphAction];
   XCTAssertEqualObjects(action.actionType, [FBSDKShareModelTestUtility openGraphActionType]);
-  BOOL boolValue = [[action numberForKey:kFBSDKShareModelTestUtilityOpenGraphBoolValueKey] boolValue];
+  BOOL boolValue = [action numberForKey:kFBSDKShareModelTestUtilityOpenGraphBoolValueKey].boolValue;
   XCTAssertEqual(boolValue, [FBSDKShareModelTestUtility openGraphBoolValue]);
-  double doubleValue = [[action numberForKey:kFBSDKShareModelTestUtilityOpenGraphDoubleValueKey] doubleValue];
+  double doubleValue = [action numberForKey:kFBSDKShareModelTestUtilityOpenGraphDoubleValueKey].doubleValue;
   XCTAssertEqual(doubleValue, [FBSDKShareModelTestUtility openGraphDoubleValue]);
-  float floatValue = [[action numberForKey:kFBSDKShareModelTestUtilityOpenGraphFloatValueKey] floatValue];
+  float floatValue = [action numberForKey:kFBSDKShareModelTestUtilityOpenGraphFloatValueKey].floatValue;
   XCTAssertEqual(floatValue, [FBSDKShareModelTestUtility openGraphFloatValue]);
-  NSInteger integerValue = [[action numberForKey:kFBSDKShareModelTestUtilityOpenGraphIntegerValueKey] integerValue];
+  NSInteger integerValue = [action numberForKey:kFBSDKShareModelTestUtilityOpenGraphIntegerValueKey].integerValue;
   XCTAssertEqual(integerValue, [FBSDKShareModelTestUtility openGraphIntegerValue]);
   NSArray *numberArray = [action arrayForKey:kFBSDKShareModelTestUtilityOpenGraphNumberArrayKey];
   XCTAssertEqualObjects(numberArray, [FBSDKShareModelTestUtility openGraphNumberArray]);
@@ -69,14 +69,14 @@
 
 - (void)testWithInvalidKey
 {
-  FBSDKShareOpenGraphAction *action = [[FBSDKShareOpenGraphAction alloc] init];
+  FBSDKShareOpenGraphAction *action = [FBSDKShareModelTestUtility openGraphAction];
   NSDictionary *properties = @{ [[NSDate alloc] init]: @"test" };
   XCTAssertThrowsSpecificNamed([action parseProperties:properties], NSException, NSInvalidArgumentException);
 }
 
 - (void)testWithInvalidValue
 {
-  FBSDKShareOpenGraphAction *action = [[FBSDKShareOpenGraphAction alloc] init];
+  FBSDKShareOpenGraphAction *action = [FBSDKShareModelTestUtility openGraphAction];
   NSDictionary *properties = @{ @"test": [[NSDate alloc] init] };
   XCTAssertThrowsSpecificNamed([action parseProperties:properties], NSException, NSInvalidArgumentException);
 }
