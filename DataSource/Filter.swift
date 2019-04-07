@@ -141,11 +141,11 @@ open class SelectFilter: Filter {
     switch selectType {
     case .one:
       if let selectedValue = selectedValues.first {
-        request.whereKey(key, equalTo: selectedValue.value)
+        request.whereKey(key, equalTo: selectedValue.value!)
       }
     case .multiple:
       if selectedValues.count > 0 {
-        request.whereKey(key, containedIn: selectedValues.map { $0.value })
+        request.whereKey(key, containedIn: selectedValues.map { $0.value! })
       }
     }
   }
@@ -170,7 +170,7 @@ open class SelectFilter: Filter {
   }
   
   open func deselect(value: SelectFilterOption) {
-    if let index = selectedValues.index(of: value) {
+    if let index = selectedValues.firstIndex(of: value) {
       selectedValues.remove(at: index)
     }
   }
