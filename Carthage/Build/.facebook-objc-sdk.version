@@ -1,0 +1,21 @@
+{
+  "commitish" : "v5.10.0",
+  "iOS" : [
+    {
+      "name" : "FBSDKPlacesKit",
+      "hash" : "8e5e8bfba98aaafa76d8b08d2f26b56a31fbe4be7d76beafb7298210e7205979"
+    },
+    {
+      "name" : "FBSDKLoginKit",
+      "hash" : "c47ed5e59e395553b2daf16cb29a9d711103586fa68de44496a824d567069f9d"
+    },
+    {
+      "name" : "FBSDKShareKit",
+      "hash" : "759f9df234409a5d685547853a37d4e065e0f2666c6b79ff8f1c77369dd008de"
+    },
+    {
+      "name" : "FBSDKCoreKit",
+      "hash" : "7876409968e8a4c1a65901ac02477991feb052b881baf7d620cb9ba7e9f968c5"
+    }
+  ]
+}

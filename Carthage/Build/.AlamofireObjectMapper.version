@@ -3,8 +3,8 @@
   "iOS" : [
     {
       "name" : "AlamofireObjectMapper",
-      "hash" : "081664a615390ea6e8c22e5dc99134fb476d2d01aff5e336d96879f17563b183",
-      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+      "hash" : "e2b0b4a99314f180b92d5b61aa9ff822499d31cf9fb1ccd03ad246a1c7bfbb86",
+      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
     }
   ]
 }

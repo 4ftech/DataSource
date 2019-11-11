@@ -84,12 +84,12 @@ public class ParseDataSource: DataSource {
   }
   
   open func promise<T>(forQuery query: PFQuery<PFObject>) -> Promise<[T]> {
-    return Promise<[T]> { (fulfill: @escaping ([T]) -> Void, reject) in
+    return Promise<[T]> { resolver in
       query.findObjectsInBackground() { (results, error) in
         if let error = error {
-          reject(error)
+          resolver.reject(error)
         } else {
-          fulfill(results?.map { $0 as! T } ?? [])
+          resolver.fulfill(results?.map { $0 as! T } ?? [])
         }
       }
     }
@@ -115,26 +115,26 @@ public class ParseDataSource: DataSource {
   open func getById<T>(id: String) -> Promise<T> {
     let query = self.query(ofObjectType: T.self as! ParseDataModel.Type)
 
-    return Promise<T> { (fulfill: @escaping (T) -> Void, reject) in
+    return Promise<T> { resolver in
       query.getObjectInBackground(withId: id) { (result, error) in
         if let result = result as? T {
-          fulfill(result)
+          resolver.fulfill(result)
         } else if let error = error {
-          reject(error)
+          resolver.reject(error)
         } else {
-          reject(NSError(domain: PFParseErrorDomain, code: PFErrorCode.errorInternalServer.rawValue, userInfo: nil))
+          resolver.reject(NSError(domain: PFParseErrorDomain, code: PFErrorCode.errorInternalServer.rawValue, userInfo: nil))
         }
       }
     }
   }
 
   open func save<T>(item: T) -> Promise<T> {
-    return Promise { fulfill, reject in
+    return Promise { resolver in
       (item as! ParseDataModel).saveInBackground() { (success, error) in
         if let error = error {
-          reject(error)
+          resolver.reject(error)
         } else {
-          fulfill(item)
+          resolver.fulfill(item)
         }
       }
     }
@@ -145,24 +145,24 @@ public class ParseDataSource: DataSource {
       parseObject[parentObject.parseClassName.lowercased()] = parentObject
     }
     
-    return Promise { fulfill, reject in
+    return Promise { resolver in
       (item as! ParseDataModel).saveInBackground() { (success, error) in
         if let error = error {
-          reject(error)
+          resolver.reject(error)
         } else {
-          fulfill(item)
+          resolver.fulfill(item)
         }
       }
     }
   }
 
   open func delete<T>(item: T) -> Promise<Void> {
-    return Promise { fulfill, reject in
+    return Promise { resolver in
       (item as! ParseDataModel).deleteInBackground() { (success, error) in
         if let error = error {
-          reject(error)
+          resolver.reject(error)
         } else {
-          fulfill(())
+          resolver.fulfill(())
         }
       }
     }

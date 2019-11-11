@@ -1,6 +1,6 @@
 github "mxcl/PromiseKit" ~> 6.8.4
 
-github "ParsePlatform/Parse-SDK-iOS-OSX"
+github "ParsePlatform/Parse-SDK-iOS-OSX" ~> 1.17.2
 
 # github "tristanhimmelman/AlamofireObjectMapper" ~> 6.0.0
 github "openium/AlamofireObjectMapper" "5.x-swift5"
