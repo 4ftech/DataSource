@@ -1,10 +1,19 @@
 {
-  "commitish" : "3.5.1",
+  "commitish" : "3.5.3",
   "iOS" : [
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "d7840265154e08c6da2e41383ba0d5839efc6601d79a81ed2b37094ed54169fa",
       "name" : "ObjectMapper",
-      "hash" : "a43047539489d00cce35bcf148273cfc732ba7783c7c8744d3d06531b79e8c72",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "ObjectMapper.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "d9f8d93e03facd9eeb0073f0d39fc9fa09121ad0920240f025565755fcc0153e",
+      "name" : "ObjectMapper",
+      "container" : "ObjectMapper.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }

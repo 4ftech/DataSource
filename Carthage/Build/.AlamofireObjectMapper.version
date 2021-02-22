@@ -2,9 +2,18 @@
   "commitish" : "b933e7816faa0c76a8d227b4e4c3323ab3cf6e9f",
   "iOS" : [
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "ea531754e2e9dc1e08e9d1db7851db0688d3aa19d7effd49868318cc0ded3ff9",
       "name" : "AlamofireObjectMapper",
-      "hash" : "e2b0b4a99314f180b92d5b61aa9ff822499d31cf9fb1ccd03ad246a1c7bfbb86",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "AlamofireObjectMapper.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "92918a6b60c2b7438afcafa4a6d85073cd8e898a260d37f9f95b4528b3594df5",
+      "name" : "AlamofireObjectMapper",
+      "container" : "AlamofireObjectMapper.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }
