@@ -341,7 +341,7 @@ open class ObjectMapperDataSource: ObjectMapperDataSourceProtocol {
   }
   
   public func save<T>(item: T) -> Promise<T> {
-    return saveMapped(item: item, forParentObject: Optional<Never>.none)
+    return saveMapped(item: item, forParentObject: Optional<ObjectMapperDataModel>.none)
   }
   
   public func save<T, U>(item: T, forParentObject parentObject: U) -> Promise<T> {
