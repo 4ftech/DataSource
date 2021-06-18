@@ -2,9 +2,10 @@
   "commitish" : "b933e7816faa0c76a8d227b4e4c3323ab3cf6e9f",
   "iOS" : [
     {
+      "hash" : "ff04353f6af97dbb84188f63dcec117139c21bc0e9d9515f9911fc5868ccc6f0",
       "name" : "AlamofireObjectMapper",
-      "hash" : "e2b0b4a99314f180b92d5b61aa9ff822499d31cf9fb1ccd03ad246a1c7bfbb86",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "linking" : "dynamic",
+      "swiftToolchainVersion" : "5.4 (swiftlang-1205.0.26.9 clang-1205.0.19.55)"
     }
   ]
 }
