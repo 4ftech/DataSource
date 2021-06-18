@@ -340,7 +340,7 @@ open class ObjectMapperDataSource: ObjectMapperDataSourceProtocol {
     return fetchObject(path: (T.self as! ObjectMapperDataModel.Type).urlPath(forId: id))
   }
   
-  public func save<T>(item: T) -> Promise<T> {
+  open func save<T>(item: T) -> Promise<T> {
     return saveMapped(item: item, forParentObject: Optional<ObjectMapperDataModel>.none)
   }
   
