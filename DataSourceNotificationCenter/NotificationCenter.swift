@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-import DataSource
+import ObjectMapperDataSource
 
 public enum CRUDType: String {
   case create = "create", update = "update", delete = "delete"
@@ -41,7 +41,7 @@ public extension NotificationCenter {
     post(name: name, object: senderObject, userInfo: userInfo)
   }
   
-  func postCRUDNotification<T: BaseDataModel>(_ notificationType: CRUDType, crudObject: T, objectClassName: String? = nil, senderObject: AnyObject? = nil) {
+  func postCRUDNotification<T: ObjectMapperDataModel>(_ notificationType: CRUDType, crudObject: T, objectClassName: String? = nil, senderObject: AnyObject? = nil) {
     let name = NotificationCenter.crudNotificationName(objectClassName ?? String(describing: type(of: crudObject)))
     NSLog("Posted for: \(name)")
     let userInfo: [String:Any] = [

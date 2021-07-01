@@ -218,7 +218,7 @@ open class SelectFilterOption: NSObject {
 }
 
 //////////////////
-open class DataSourceSelectFilter<T>: SelectFilter where T:BaseDataModel {
+open class DataSourceSelectFilter<T>: SelectFilter where T:ObjectMapperDataModel {
   override open func loadOptions() -> Promise<[SelectFilterOption]> {
     return T.getAll().then { (rows: [T]) -> Promise<[SelectFilterOption]> in
       for row in rows {

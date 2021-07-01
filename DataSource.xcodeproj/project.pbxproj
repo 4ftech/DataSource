@@ -7,52 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		705D2DA81E5E4064005D3A5F /* DataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 705D2DA61E5E4064005D3A5F /* DataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		705D2DAF1E5E4073005D3A5F /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2DAE1E5E4073005D3A5F /* DataSource.swift */; };
-		705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */; };
-		705D2DC81E5F6AAC005D3A5F /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 705D2DC71E5F6AAC005D3A5F /* Cartfile */; };
-		705D2DCB1E5F6B2F005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
-		705D2DD61E5F6CA6005D3A5F /* ParseDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 705D2DD41E5F6CA6005D3A5F /* ParseDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		705D2DDB1E5F6CB4005D3A5F /* ParseDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2DDA1E5F6CB4005D3A5F /* ParseDataSource.swift */; };
-		705D2DDD1E5F6DBA005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DA31E5E4064005D3A5F /* DataSource.framework */; };
 		705D2DF61E5F8FF1005D3A5F /* ObjectMapperDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 705D2DF41E5F8FF1005D3A5F /* ObjectMapperDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		705D2DFB1E5F8FFD005D3A5F /* ObjectMapperDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2DFA1E5F8FFD005D3A5F /* ObjectMapperDataSource.swift */; };
-		705D2DFC1E5F909D005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DA31E5E4064005D3A5F /* DataSource.framework */; };
 		705D2DFE1E5F91B5005D3A5F /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DFD1E5F91B5005D3A5F /* Alamofire.framework */; };
 		705D2E001E5F91C1005D3A5F /* AlamofireObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DFF1E5F91C1005D3A5F /* AlamofireObjectMapper.framework */; };
-		705D2E041E5F91DB005D3A5F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E031E5F91DB005D3A5F /* Parse.framework */; };
-		705D2E051E5F91E2005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
-		705D2E071E5F91F2005D3A5F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E061E5F91F2005D3A5F /* Bolts.framework */; };
 		705D2E091E5F9222005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */; };
-		705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */; };
 		705D2EF11E66075F005D3A5F /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2EF01E66075F005D3A5F /* Dictionary.swift */; };
 		70731A8D1FD1B9D100C7CF45 /* DataSourceNotificationCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 70731A8B1FD1B9D100C7CF45 /* DataSourceNotificationCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		70731A911FD1B9F000C7CF45 /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DA31E5E4064005D3A5F /* DataSource.framework */; };
 		70731A921FD1B9F300C7CF45 /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9F1E669514005D3A5F /* RxBlocking.framework */; };
 		70731A931FD1B9F600C7CF45 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9D1E669510005D3A5F /* RxCocoa.framework */; };
 		70731A941FD1B9FA00C7CF45 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2F9B1E66950C005D3A5F /* RxSwift.framework */; };
 		70731A981FD1BA3600C7CF45 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2F991E669409005D3A5F /* NotificationCenter.swift */; };
-		70961C0A1EA7F636007CD33E /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C091EA7F636007CD33E /* Filter.swift */; };
-		709F516920795BDB009355F4 /* BaseDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709F516820795BDB009355F4 /* BaseDataModel.swift */; };
 		709F516B20795C1C009355F4 /* ObjectMapperDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709F516A20795C1C009355F4 /* ObjectMapperDataModel.swift */; };
 		709F516D20795C49009355F4 /* ObjectMapperDataSourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709F516C20795C49009355F4 /* ObjectMapperDataSourceProtocol.swift */; };
-		709F516F20795C67009355F4 /* BaseObjectMapperDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709F516E20795C67009355F4 /* BaseObjectMapperDataSource.swift */; };
-		70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70C408791E6AF74500A14EB7 /* ObjectMapper.framework */; };
-		70FE205C2080F212001536A7 /* ParseDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FE205B2080F212001536A7 /* ParseDataModel.swift */; };
+		70F89C14268D68B600AAF34A /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C091EA7F636007CD33E /* Filter.swift */; };
+		70F89C15268D68B800AAF34A /* FetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */; };
+		70F89C16268D68BA00AAF34A /* FetchConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		705D2DA31E5E4064005D3A5F /* DataSource.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataSource.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		705D2DA61E5E4064005D3A5F /* DataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
-		705D2DA71E5E4064005D3A5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		705D2DAE1E5E4073005D3A5F /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchConditions.swift; sourceTree = "<group>"; };
 		705D2DC71E5F6AAC005D3A5F /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		705D2DCA1E5F6B2F005D3A5F /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
-		705D2DD21E5F6CA6005D3A5F /* ParseDataSource.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ParseDataSource.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		705D2DD41E5F6CA6005D3A5F /* ParseDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseDataSource.h; sourceTree = "<group>"; };
-		705D2DD51E5F6CA6005D3A5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		705D2DDA1E5F6CB4005D3A5F /* ParseDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataSource.swift; sourceTree = "<group>"; };
 		705D2DF21E5F8FF1005D3A5F /* ObjectMapperDataSource.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ObjectMapperDataSource.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		705D2DF41E5F8FF1005D3A5F /* ObjectMapperDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectMapperDataSource.h; sourceTree = "<group>"; };
 		705D2DF51E5F8FF1005D3A5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -71,40 +47,16 @@
 		70731A8B1FD1B9D100C7CF45 /* DataSourceNotificationCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataSourceNotificationCenter.h; sourceTree = "<group>"; };
 		70731A8C1FD1B9D100C7CF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70961C091EA7F636007CD33E /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
-		709F516820795BDB009355F4 /* BaseDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDataModel.swift; sourceTree = "<group>"; };
 		709F516A20795C1C009355F4 /* ObjectMapperDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperDataModel.swift; sourceTree = "<group>"; };
 		709F516C20795C49009355F4 /* ObjectMapperDataSourceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperDataSourceProtocol.swift; sourceTree = "<group>"; };
-		709F516E20795C67009355F4 /* BaseObjectMapperDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseObjectMapperDataSource.swift; sourceTree = "<group>"; };
 		70C408791E6AF74500A14EB7 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
-		70FE205B2080F212001536A7 /* ParseDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		705D2D9F1E5E4064005D3A5F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70C4087A1E6AF74500A14EB7 /* ObjectMapper.framework in Frameworks */,
-				705D2DCB1E5F6B2F005D3A5F /* PromiseKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		705D2DCE1E5F6CA6005D3A5F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				705D2DDD1E5F6DBA005D3A5F /* DataSource.framework in Frameworks */,
-				705D2E041E5F91DB005D3A5F /* Parse.framework in Frameworks */,
-				705D2E071E5F91F2005D3A5F /* Bolts.framework in Frameworks */,
-				705D2E051E5F91E2005D3A5F /* PromiseKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		705D2DEE1E5F8FF1005D3A5F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				705D2DFC1E5F909D005D3A5F /* DataSource.framework in Frameworks */,
 				705D2E091E5F9222005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D2DFE1E5F91B5005D3A5F /* Alamofire.framework in Frameworks */,
 				705D2E001E5F91C1005D3A5F /* AlamofireObjectMapper.framework in Frameworks */,
@@ -115,7 +67,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70731A911FD1B9F000C7CF45 /* DataSource.framework in Frameworks */,
 				70731A921FD1B9F300C7CF45 /* RxBlocking.framework in Frameworks */,
 				70731A931FD1B9F600C7CF45 /* RxCocoa.framework in Frameworks */,
 				70731A941FD1B9FA00C7CF45 /* RxSwift.framework in Frameworks */,
@@ -128,8 +79,6 @@
 		705D2D991E5E4063005D3A5F = {
 			isa = PBXGroup;
 			children = (
-				705D2DA51E5E4064005D3A5F /* DataSource */,
-				705D2DD31E5F6CA6005D3A5F /* ParseDataSource */,
 				705D2DF31E5F8FF1005D3A5F /* ObjectMapperDataSource */,
 				70731A8A1FD1B9D000C7CF45 /* DataSourceNotificationCenter */,
 				705D2DA41E5E4064005D3A5F /* Products */,
@@ -141,26 +90,10 @@
 		705D2DA41E5E4064005D3A5F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				705D2DA31E5E4064005D3A5F /* DataSource.framework */,
-				705D2DD21E5F6CA6005D3A5F /* ParseDataSource.framework */,
 				705D2DF21E5F8FF1005D3A5F /* ObjectMapperDataSource.framework */,
 				70731A891FD1B9D000C7CF45 /* DataSourceNotificationCenter.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		705D2DA51E5E4064005D3A5F /* DataSource */ = {
-			isa = PBXGroup;
-			children = (
-				705D2DA61E5E4064005D3A5F /* DataSource.h */,
-				705D2DA71E5E4064005D3A5F /* Info.plist */,
-				705D2DAE1E5E4073005D3A5F /* DataSource.swift */,
-				709F516820795BDB009355F4 /* BaseDataModel.swift */,
-				705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */,
-				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
-				70961C091EA7F636007CD33E /* Filter.swift */,
-			);
-			path = DataSource;
 			sourceTree = "<group>";
 		};
 		705D2DC91E5F6B2F005D3A5F /* Frameworks */ = {
@@ -179,26 +112,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		705D2DD31E5F6CA6005D3A5F /* ParseDataSource */ = {
-			isa = PBXGroup;
-			children = (
-				705D2DD41E5F6CA6005D3A5F /* ParseDataSource.h */,
-				705D2DD51E5F6CA6005D3A5F /* Info.plist */,
-				705D2DDA1E5F6CB4005D3A5F /* ParseDataSource.swift */,
-				70FE205B2080F212001536A7 /* ParseDataModel.swift */,
-			);
-			path = ParseDataSource;
-			sourceTree = "<group>";
-		};
 		705D2DF31E5F8FF1005D3A5F /* ObjectMapperDataSource */ = {
 			isa = PBXGroup;
 			children = (
+				705D2DC31E5F63FE005D3A5F /* FetchConditions.swift */,
+				705D2EEE1E65CBB5005D3A5F /* FetchRequest.swift */,
+				70961C091EA7F636007CD33E /* Filter.swift */,
 				705D2DF41E5F8FF1005D3A5F /* ObjectMapperDataSource.h */,
 				705D2DF51E5F8FF1005D3A5F /* Info.plist */,
 				705D2EF01E66075F005D3A5F /* Dictionary.swift */,
 				709F516A20795C1C009355F4 /* ObjectMapperDataModel.swift */,
 				709F516C20795C49009355F4 /* ObjectMapperDataSourceProtocol.swift */,
-				709F516E20795C67009355F4 /* BaseObjectMapperDataSource.swift */,
 				705D2DFA1E5F8FFD005D3A5F /* ObjectMapperDataSource.swift */,
 			);
 			path = ObjectMapperDataSource;
@@ -217,22 +141,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		705D2DA01E5E4064005D3A5F /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				705D2DA81E5E4064005D3A5F /* DataSource.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		705D2DCF1E5F6CA6005D3A5F /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				705D2DD61E5F6CA6005D3A5F /* ParseDataSource.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		705D2DEF1E5F8FF1005D3A5F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -252,42 +160,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		705D2DA21E5E4064005D3A5F /* DataSource */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 705D2DAB1E5E4064005D3A5F /* Build configuration list for PBXNativeTarget "DataSource" */;
-			buildPhases = (
-				705D2D9E1E5E4064005D3A5F /* Sources */,
-				705D2D9F1E5E4064005D3A5F /* Frameworks */,
-				705D2DA01E5E4064005D3A5F /* Headers */,
-				705D2DA11E5E4064005D3A5F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = DataSource;
-			productName = DataSource;
-			productReference = 705D2DA31E5E4064005D3A5F /* DataSource.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		705D2DD11E5F6CA6005D3A5F /* ParseDataSource */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 705D2DD71E5F6CA6005D3A5F /* Build configuration list for PBXNativeTarget "ParseDataSource" */;
-			buildPhases = (
-				705D2DCD1E5F6CA6005D3A5F /* Sources */,
-				705D2DCE1E5F6CA6005D3A5F /* Frameworks */,
-				705D2DCF1E5F6CA6005D3A5F /* Headers */,
-				705D2DD01E5F6CA6005D3A5F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ParseDataSource;
-			productName = ParseDataSource;
-			productReference = 705D2DD21E5F6CA6005D3A5F /* ParseDataSource.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		705D2DF11E5F8FF1005D3A5F /* ObjectMapperDataSource */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 705D2DF91E5F8FF1005D3A5F /* Build configuration list for PBXNativeTarget "ObjectMapperDataSource" */;
@@ -333,18 +205,6 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Oinkist;
 				TargetAttributes = {
-					705D2DA21E5E4064005D3A5F = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = M68244X38L;
-						LastSwiftMigration = 1010;
-						ProvisioningStyle = Automatic;
-					};
-					705D2DD11E5F6CA6005D3A5F = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = M68244X38L;
-						LastSwiftMigration = 0820;
-						ProvisioningStyle = Automatic;
-					};
 					705D2DF11E5F8FF1005D3A5F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = M68244X38L;
@@ -372,8 +232,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				705D2DA21E5E4064005D3A5F /* DataSource */,
-				705D2DD11E5F6CA6005D3A5F /* ParseDataSource */,
 				705D2DF11E5F8FF1005D3A5F /* ObjectMapperDataSource */,
 				70731A881FD1B9D000C7CF45 /* DataSourceNotificationCenter */,
 			);
@@ -381,21 +239,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		705D2DA11E5E4064005D3A5F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				705D2DC81E5F6AAC005D3A5F /* Cartfile in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		705D2DD01E5F6CA6005D3A5F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		705D2DF01E5F8FF1005D3A5F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -413,36 +256,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		705D2D9E1E5E4064005D3A5F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				709F516920795BDB009355F4 /* BaseDataModel.swift in Sources */,
-				70961C0A1EA7F636007CD33E /* Filter.swift in Sources */,
-				705D2EEF1E65CBB5005D3A5F /* FetchRequest.swift in Sources */,
-				705D2DC41E5F63FE005D3A5F /* FetchConditions.swift in Sources */,
-				705D2DAF1E5E4073005D3A5F /* DataSource.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		705D2DCD1E5F6CA6005D3A5F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				705D2DDB1E5F6CB4005D3A5F /* ParseDataSource.swift in Sources */,
-				70FE205C2080F212001536A7 /* ParseDataModel.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		705D2DED1E5F8FF1005D3A5F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70F89C15268D68B800AAF34A /* FetchRequest.swift in Sources */,
 				709F516D20795C49009355F4 /* ObjectMapperDataSourceProtocol.swift in Sources */,
+				70F89C14268D68B600AAF34A /* Filter.swift in Sources */,
 				705D2DFB1E5F8FFD005D3A5F /* ObjectMapperDataSource.swift in Sources */,
 				705D2EF11E66075F005D3A5F /* Dictionary.swift in Sources */,
+				70F89C16268D68BA00AAF34A /* FetchConditions.swift in Sources */,
 				709F516B20795C1C009355F4 /* ObjectMapperDataModel.swift in Sources */,
-				709F516F20795C67009355F4 /* BaseObjectMapperDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,100 +400,6 @@
 			};
 			name = Release;
 		};
-		705D2DAC1E5E4064005D3A5F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = DataSource/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		705D2DAD1E5E4064005D3A5F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = DataSource/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		705D2DD81E5F6CA6005D3A5F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = ParseDataSource/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ParseDataSource;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		705D2DD91E5F6CA6005D3A5F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = ParseDataSource/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.DataSource.ParseDataSource;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		705D2DF71E5F8FF1005D3A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -785,24 +515,6 @@
 			buildConfigurations = (
 				705D2DA91E5E4064005D3A5F /* Debug */,
 				705D2DAA1E5E4064005D3A5F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		705D2DAB1E5E4064005D3A5F /* Build configuration list for PBXNativeTarget "DataSource" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				705D2DAC1E5E4064005D3A5F /* Debug */,
-				705D2DAD1E5E4064005D3A5F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		705D2DD71E5F6CA6005D3A5F /* Build configuration list for PBXNativeTarget "ParseDataSource" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				705D2DD81E5F6CA6005D3A5F /* Debug */,
-				705D2DD91E5F6CA6005D3A5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

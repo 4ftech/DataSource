@@ -7,23 +7,22 @@
 //
 
 import Foundation
-import DataSource
 import PromiseKit
 
 import Alamofire
 import ObjectMapper
 import AlamofireObjectMapper
 
-open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
+open class ObjectMapperDataModel: NSObject, Mappable {
   public static var _sharedDataSource: ObjectMapperDataSource!
-  open class var sharedDataSource: DataSource {
+  open class var sharedDataSource: ObjectMapperDataSource {
     return _sharedDataSource
   }
   
-  open var objectId: String?
-  open var name: String?
-  open var createdAt: Date?
-  open var updatedAt: Date?
+  public var objectId: String?
+  public var name: String?
+  public var createdAt: Date?
+  public var updatedAt: Date?
   
   open class var urlPath: String { return "" }
   
@@ -58,7 +57,7 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
     
   }
   
-  open override func isEqual(_ object: Any?) -> Bool {
+  public override func isEqual(_ object: Any?) -> Bool {
     if let object = object as? ObjectMapperDataModel, let id = self.objectId, let objectId = object.objectId {
       return id == objectId && type(of: self).urlPath == type(of: object).urlPath
     } else {
@@ -66,7 +65,7 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
     }
   }
   
-  open override var hash: Int {
+  public override var hash: Int {
     if let objectId = self.objectId {
       return objectId.hash ^ type(of: self).urlPath.hash
     } else {
@@ -74,24 +73,65 @@ open class ObjectMapperDataModel: NSObject, BaseDataModel, Mappable {
     }
   }
   
-  open func detailRouteRequest(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) -> DataRequest {
+  public func detailRouteRequest(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) -> DataRequest {
     let dataSource = type(of: self).sharedDataSource as! ObjectMapperDataSource
     return dataSource.alamofireRequest(forURLPath: dataSource.pathByAppending(path: path, toURL: self.pathForObject), method: method, encoding: encoding, parameters: parameters, headers: headers)
   }
   
-  open func detailRouteRequestPromise(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
+  public func detailRouteRequestPromise(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) -> Promise<DataRequest> {
     let dataSource = type(of: self).sharedDataSource as! ObjectMapperDataSource
     return dataSource.dataRequestPromise(forURLPath: dataSource.pathByAppending(path: path, toURL: self.pathForObject), method: method, encoding: encoding, parameters: parameters, headers: headers)
   }
   
-  open func detailRouteObjectPromise<T>(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.objectKeyPath) -> Promise<T> where T:ObjectMapperDataModel {
+  public func detailRouteObjectPromise<T>(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.objectKeyPath) -> Promise<T> where T:ObjectMapperDataModel {
     let dataSource = type(of: self).sharedDataSource as! ObjectMapperDataSource
     return dataSource.objectRequestPromise(forURLPath: dataSource.pathByAppending(path: path, toURL: self.pathForObject), method: method, encoding: encoding, parameters: parameters, headers: headers, keyPath: keyPath)
   }
   
-  open func detailRouteArrayPromise<T>(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.listKeyPath) -> Promise<[T]> where T:ObjectMapperDataModel {
+  public func detailRouteArrayPromise<T>(path: String, method: HTTPMethod, encoding: ParameterEncoding? = nil, parameters: Parameters? = nil, headers: HTTPHeaders? = nil, keyPath: String? = T.listKeyPath) -> Promise<[T]> where T:ObjectMapperDataModel {
     let dataSource = type(of: self).sharedDataSource as! ObjectMapperDataSource
     return dataSource.arrayRequestPromise(forURLPath: dataSource.pathByAppending(path: path, toURL: self.pathForObject), method: method, encoding: encoding, parameters: parameters, headers: headers, keyPath: keyPath)
-  }  
+  }
+  
+  public var isNew: Bool {
+    return objectId == nil
+  }
+
+  public static func fetchRequest(sortDescriptor: NSSortDescriptor? = nil, offset: Int? = nil, limit: Int? = nil) -> FetchRequest {
+    return FetchRequest(sortDescriptor: sortDescriptor, offset: offset, limit: limit)
+  }
+
+  @discardableResult
+  public static func getById<T:ObjectMapperDataModel>(id: String) -> Promise<T> {
+    return sharedDataSource.getById(id: id)
+  }
+
+  public static func getAll<T:ObjectMapperDataModel>(filters: [Filter]? = nil) -> Promise<[T]> {
+    return sharedDataSource.fetch(request: fetchRequest().apply(filters: filters))
+  }
+
+  @discardableResult
+  open func save<T:ObjectMapperDataModel>() -> Promise<T> {
+    return type(of: self).sharedDataSource.save(item: self as! T)
+  }
+
+  @discardableResult
+  open func save<T:ObjectMapperDataModel, U:ObjectMapperDataModel>(forParentObject parentObject: U) -> Promise<T> {
+    return type(of: self).sharedDataSource.save(item: self as! T, forParentObject: parentObject)
+  }
+
+  @discardableResult
+  public func delete() -> Promise<Void> {
+    return type(of: self).sharedDataSource.delete(item: self)
+  }
+
+  @discardableResult
+  public func fetch<T:ObjectMapperDataModel>() -> Promise<T> {
+    if let id = self.objectId {
+      return type(of: self).sharedDataSource.getById(id: id)
+    } else {
+      return Promise.value(self as! T)
+    }
+  }
 }
 
